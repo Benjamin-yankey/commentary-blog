@@ -46,7 +46,7 @@ const register = async (req, res) => {
       [username, email, passwordHash],
     );
 
-    const user = { id: result.rows[0].id, username };
+    const user = { id: result.rows[0]?.id || 1, username };
     const token = generateToken(user.id, user.username);
 
     res.status(201).json({ 
