@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PostView from "./pages/PostView";
 import CreatePost from "./pages/CreatePost";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import "./App.css";
-
-const Login = () => <div className="flex items-center justify-center min-h-screen">Login Page Placeholder</div>;
-const Register = () => <div className="flex items-center justify-center min-h-screen">Register Page Placeholder</div>;
 
 function App() {
   return (
