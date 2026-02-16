@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../src/app");
-const pool = require("../src/config/database");
+const pool = require("../src/config/database-sqlite");
 
-jest.mock("../src/config/database");
+jest.mock("../src/config/database-sqlite");
 
 beforeEach(() => {
   pool.query.mockClear();
@@ -14,7 +14,7 @@ afterAll(() => {
 
 describe("POST /api/auth/register", () => {
   test("should register new user with valid data", async () => {
-    pool.query.mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({});
+    pool.query.mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [{ id: 1 }] });
 
     const response = await request(app).post("/api/auth/register").send({
       username: "testuser",

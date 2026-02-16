@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../src/app");
-const pool = require("../src/config/database");
+const pool = require("../src/config/database-sqlite");
 
-jest.mock("../src/config/database");
+jest.mock("../src/config/database-sqlite");
 
 beforeEach(() => {
   pool.query.mockClear();
@@ -60,7 +60,7 @@ describe("GET /api/posts", () => {
           { id: 2, title: "Post 2", content: "Content 2", username: "user2" },
         ],
       })
-      .mockResolvedValueOnce({ rows: [{ count: "2" }] });
+      .mockResolvedValueOnce({ rows: [{ count: 2 }] });
 
     const response = await request(app).get("/api/posts");
 
