@@ -46,7 +46,10 @@ const register = async (req, res) => {
       [username, email, passwordHash],
     );
 
-    const user = { id: result.rows[0]?.id || 1, username };
+    const user = { 
+      id: (result && result.rows && result.rows[0]?.id) || 1, 
+      username 
+    };
     const token = generateToken(user.id, user.username);
 
     res.status(201).json({ 
@@ -73,7 +76,7 @@ const login = async (req, res) => {
       [email]
     );
 
-    if (result.rows.length === 0) {
+    if (!result || !result.rows || result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
