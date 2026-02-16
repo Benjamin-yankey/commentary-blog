@@ -13,23 +13,38 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "babel-jest": "^30.2.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jest": "^30.2.0",
-    "supertest": "^7.2.2"
+    "jest-environment-jsdom": "^30.2.0",
+    "jest-transform-stub": "^2.0.0",
+    "supertest": "^7.2.2",
+    "whatwg-fetch": "^3.6.20"
   },
   "jest": {
     "testEnvironment": "node",
     "coverageDirectory": "coverage",
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/client/"
+      "/client/node_modules/"
     ],
-    "roots": [
-      "<rootDir>/tests"
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "jest-transform-stub",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "jest-transform-stub"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
     ],
     "collectCoverageFrom": [
       "src/**/*.js",
+      "client/src/**/*.{js,jsx}",
       "!src/server.js"
     ]
   }
