@@ -42,6 +42,10 @@
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setup.js"
     ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/client/node_modules"
+    ],
     "collectCoverageFrom": [
       "src/**/*.js",
       "client/src/**/*.{js,jsx}",
