@@ -16,7 +16,7 @@ const createPost = async (req, res) => {
 
     res.status(201).json({
       message: "Post created successfully",
-      post: result.rows[0],
+      post: result && result.rows ? result.rows[0] : null,
     });
   } catch (error) {
     console.error("Create post error:", error);
@@ -39,7 +39,7 @@ const getAllPosts = async (req, res) => {
     );
 
     const countResult = await pool.query("SELECT COUNT(*) as count FROM posts", []);
-    const total = parseInt(countResult.rows[0].count);
+    const total = (countResult && countResult.rows && countResult.rows[0]) ? parseInt(countResult.rows[0].count) : 0;
 
     res.json({
       posts: result.rows,
@@ -68,7 +68,7 @@ const getPostById = async (req, res) => {
       [id]
     );
 
-    if (result.rows.length === 0) {
+    if (!result || !result.rows || result.rows.length === 0) {
       return res.status(404).json({ error: "Post not found" });
     }
 
