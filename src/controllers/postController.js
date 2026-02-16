@@ -1,4 +1,4 @@
-const pool = require("../config/database");
+const pool = require("../config/database-sqlite");
 
 const createPost = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ const createPost = async (req, res) => {
     }
 
     const result = await pool.query(
-      "INSERT INTO posts (title, content, author_id) VALUES ($1, $2, $3) RETURNING *",
+      "INSERT INTO posts (title, content, author_id) VALUES (?, ?, ?)",
       [title, content, authorId]
     );
 
@@ -34,11 +34,11 @@ const getAllPosts = async (req, res) => {
       `SELECT p.*, u.username FROM posts p 
        JOIN users u ON p.author_id = u.id 
        ORDER BY p.created_at DESC 
-       LIMIT $1 OFFSET $2`,
+       LIMIT ? OFFSET ?`,
       [limit, offset]
     );
 
-    const countResult = await pool.query("SELECT COUNT(*) FROM posts");
+    const countResult = await pool.query("SELECT COUNT(*) as count FROM posts", []);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
@@ -52,7 +52,8 @@ const getAllPosts = async (req, res) => {
     });
   } catch (error) {
     console.error("Get posts error:", error);
-    res.status(500).json({ error: "Server error" });
+    console.error("Error details:", error.message);
+    res.status(500).json({ error: "Server error", details: error.message });
   }
 };
 
@@ -63,7 +64,7 @@ const getPostById = async (req, res) => {
     const result = await pool.query(
       `SELECT p.*, u.username FROM posts p 
        JOIN users u ON p.author_id = u.id 
-       WHERE p.id = $1`,
+       WHERE p.id = ?`,
       [id]
     );
 

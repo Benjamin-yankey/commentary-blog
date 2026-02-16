@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const pool = require("../config/database");
+const pool = require("../config/database-sqlite");
 const generateToken = require("../utils/generateToken");
 
 const register = async (req, res) => {
@@ -28,7 +28,7 @@ const register = async (req, res) => {
 
     // Check if user exists
     const userExists = await pool.query(
-      "SELECT * FROM users WHERE email = $1 OR username = $2",
+      "SELECT * FROM users WHERE email = ? OR username = ?",
       [email, username],
     );
 
@@ -42,11 +42,11 @@ const register = async (req, res) => {
 
     // Insert user
     const result = await pool.query(
-      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username",
+      "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
       [username, email, passwordHash],
     );
 
-    const user = result.rows[0];
+    const user = { id: result.rows[0].id, username };
     const token = generateToken(user.id, user.username);
 
     res.status(201).json({ 
@@ -69,7 +69,7 @@ const login = async (req, res) => {
     }
 
     const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
+      "SELECT * FROM users WHERE email = ?",
       [email]
     );
 
