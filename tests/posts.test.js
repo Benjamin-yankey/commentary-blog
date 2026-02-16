@@ -1,10 +1,10 @@
 const request = require("supertest");
+jest.mock("../src/config/database-sqlite");
+jest.mock("jsonwebtoken");
+
 const app = require("../src/app");
 const pool = require("../src/config/database-sqlite");
 const jwt = require("jsonwebtoken");
-
-jest.mock("../src/config/database-sqlite");
-jest.mock("jsonwebtoken");
 
 beforeEach(() => {
   pool.query.mockClear();

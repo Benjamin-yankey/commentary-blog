@@ -1,8 +1,8 @@
 const request = require("supertest");
+jest.mock("../src/config/database-sqlite");
+
 const app = require("../src/app");
 const pool = require("../src/config/database-sqlite");
-
-jest.mock("../src/config/database-sqlite");
 
 beforeEach(() => {
   pool.query.mockClear();
