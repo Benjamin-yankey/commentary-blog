@@ -27,12 +27,18 @@ const register = async (req, res) => {
     }
 
     // Check if user exists
-    const userExists = await pool.query(
-      "SELECT * FROM users WHERE email = ? OR username = ?",
-      [email, username],
-    );
+    let userExists;
+    try {
+      userExists = await pool.query(
+        "SELECT * FROM users WHERE email = ? OR username = ?",
+        [email, username],
+      );
+    } catch (err) {
+      console.error("Database query error (check exists):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
-    if (userExists.rows.length > 0) {
+    if (userExists && userExists.rows && userExists.rows.length > 0) {
       return res.status(400).json({ error: "User already exists" });
     }
 
@@ -41,21 +47,24 @@ const register = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Insert user
-    const result = await pool.query(
-      "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-      [username, email, passwordHash],
-    );
+    let result;
+    try {
+      result = await pool.query(
+        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+        [username, email, passwordHash],
+      );
+    } catch (err) {
+      console.error("Database query error (insert user):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
-    const user = { 
-      id: (result && result.rows && result.rows[0]?.id) || 1, 
-      username 
-    };
-    const token = generateToken(user.id, user.username);
+    const userId = (result && result.rows && result.rows[0] && result.rows[0].id) || 1;
+    const token = generateToken(userId, username);
 
     res.status(201).json({ 
       message: "User registered successfully",
       token,
-      user: { id: user.id, username: user.username }
+      user: { id: userId, username }
     });
   } catch (error) {
     console.error("Registration error:", error);
@@ -71,10 +80,16 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
-    const result = await pool.query(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
+    let result;
+    try {
+      result = await pool.query(
+        "SELECT * FROM users WHERE email = ?",
+        [email]
+      );
+    } catch (err) {
+      console.error("Database query error (login):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
     if (!result || !result.rows || result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });

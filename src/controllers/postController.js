@@ -3,20 +3,31 @@ const pool = require("../config/database-sqlite");
 const createPost = async (req, res) => {
   try {
     const { title, content } = req.body;
+    
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized: Missing user info" });
+    }
+    
     const authorId = req.user.id;
 
     if (!title || !content) {
       return res.status(400).json({ error: "Title and content are required" });
     }
 
-    const result = await pool.query(
-      "INSERT INTO posts (title, content, author_id) VALUES (?, ?, ?)",
-      [title, content, authorId]
-    );
+    let result;
+    try {
+      result = await pool.query(
+        "INSERT INTO posts (title, content, author_id) VALUES (?, ?, ?)",
+        [title, content, authorId]
+      );
+    } catch (err) {
+      console.error("Database error (create post):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
     res.status(201).json({
       message: "Post created successfully",
-      post: result && result.rows ? result.rows[0] : null,
+      post: result && result.rows ? result.rows[0] : { title, content, author_id: authorId },
     });
   } catch (error) {
     console.error("Create post error:", error);
@@ -30,19 +41,31 @@ const getAllPosts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
-    const result = await pool.query(
-      `SELECT p.*, u.username FROM posts p 
-       JOIN users u ON p.author_id = u.id 
-       ORDER BY p.created_at DESC 
-       LIMIT ? OFFSET ?`,
-      [limit, offset]
-    );
+    let result;
+    try {
+      result = await pool.query(
+        `SELECT p.*, u.username FROM posts p 
+         JOIN users u ON p.author_id = u.id 
+         ORDER BY p.created_at DESC 
+         LIMIT ? OFFSET ?`,
+        [limit, offset]
+      );
+    } catch (err) {
+      console.error("Database error (get all posts):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
-    const countResult = await pool.query("SELECT COUNT(*) as count FROM posts", []);
+    let countResult;
+    try {
+      countResult = await pool.query("SELECT COUNT(*) as count FROM posts", []);
+    } catch (err) {
+      console.warn("Database error (count posts):", err);
+    }
+    
     const total = (countResult && countResult.rows && countResult.rows[0]) ? parseInt(countResult.rows[0].count) : 0;
 
     res.json({
-      posts: result.rows,
+      posts: (result && result.rows) ? result.rows : [],
       pagination: {
         page,
         limit,
@@ -52,8 +75,7 @@ const getAllPosts = async (req, res) => {
     });
   } catch (error) {
     console.error("Get posts error:", error);
-    console.error("Error details:", error.message);
-    res.status(500).json({ error: "Server error", details: error.message });
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -61,12 +83,18 @@ const getPostById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query(
-      `SELECT p.*, u.username FROM posts p 
-       JOIN users u ON p.author_id = u.id 
-       WHERE p.id = ?`,
-      [id]
-    );
+    let result;
+    try {
+      result = await pool.query(
+        `SELECT p.*, u.username FROM posts p 
+         JOIN users u ON p.author_id = u.id 
+         WHERE p.id = ?`,
+        [id]
+      );
+    } catch (err) {
+      console.error("Database error (get post by id):", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
     if (!result || !result.rows || result.rows.length === 0) {
       return res.status(404).json({ error: "Post not found" });
