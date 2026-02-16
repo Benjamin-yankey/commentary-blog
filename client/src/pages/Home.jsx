@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Hero from '../components/Hero';
 import PostCard from '../components/PostCard';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -33,18 +35,7 @@ const Home = () => {
       <div className="min-h-screen bg-gray-50">
         <Hero />
         <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map(n => (
-              <div key={n} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="h-48 bg-gray-200 animate-pulse"></div>
-                <div className="p-6">
-                  <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LoadingSpinner />
         </div>
       </div>
     );
@@ -52,15 +43,10 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 text-xl mb-4">{error}</p>
-          <button 
-            onClick={() => fetchPosts(currentPage)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Try Again
-          </button>
+      <div className="min-h-screen bg-gray-50">
+        <Hero />
+        <div className="container mx-auto px-4 py-12">
+          <ErrorMessage message={error} onRetry={() => fetchPosts(currentPage)} />
         </div>
       </div>
     );
