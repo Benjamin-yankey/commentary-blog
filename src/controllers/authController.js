@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const pool = require("../config/database");
+const generateToken = require("../utils/generateToken");
 
 const register = async (req, res) => {
   try {
@@ -40,16 +41,60 @@ const register = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Insert user
-    await pool.query(
-      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
+    const result = await pool.query(
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username",
       [username, email, passwordHash],
     );
 
-    res.status(201).json({ message: "User registered successfully" });
+    const user = result.rows[0];
+    const token = generateToken(user.id, user.username);
+
+    res.status(201).json({ 
+      message: "User registered successfully",
+      token,
+      user: { id: user.id, username: user.username }
+    });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-module.exports = { register };
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const user = result.rows[0];
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = generateToken(user.id, user.username);
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: { id: user.id, username: user.username }
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { register, login };
