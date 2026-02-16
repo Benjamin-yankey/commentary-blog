@@ -1,5 +1,5 @@
 module.exports = {
   testEnvironment: "node",
   coverageDirectory: "coverage",
-  testPathIgnorePatterns: ["/node_modules/", "/client/"],
+  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/client/"],
 };
