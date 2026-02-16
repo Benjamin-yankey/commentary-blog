@@ -1,8 +1,21 @@
 const request = require("supertest");
 const app = require("../src/app");
+const pool = require("../src/config/database");
+
+jest.mock("../src/config/database");
+
+beforeEach(() => {
+  pool.query.mockClear();
+});
+
+afterAll(() => {
+  jest.clearAllMocks();
+});
 
 describe("POST /api/auth/register", () => {
   test("should register new user with valid data", async () => {
+    pool.query.mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({});
+
     const response = await request(app).post("/api/auth/register").send({
       username: "testuser",
       email: "test@example.com",
