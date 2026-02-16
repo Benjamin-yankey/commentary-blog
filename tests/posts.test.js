@@ -1,11 +1,14 @@
 const request = require("supertest");
 const app = require("../src/app");
 const pool = require("../src/config/database-sqlite");
+const jwt = require("jsonwebtoken");
 
 jest.mock("../src/config/database-sqlite");
+jest.mock("jsonwebtoken");
 
 beforeEach(() => {
   pool.query.mockClear();
+  jwt.verify.mockReturnValue({ id: 1, username: "testuser" });
 });
 
 afterAll(() => {
@@ -14,6 +17,7 @@ afterAll(() => {
 
 describe("POST /api/posts", () => {
   test("should create post with valid data and auth", async () => {
+    jwt.verify.mockReturnValue({ id: 1, username: "testuser" });
     pool.query.mockResolvedValueOnce({
       rows: [{ id: 1, title: "Test Post", content: "Test content", author_id: 1 }],
     });
@@ -40,6 +44,8 @@ describe("POST /api/posts", () => {
   });
 
   test("should reject post with missing title", async () => {
+    jwt.verify.mockReturnValue({ id: 1, username: "testuser" });
+    
     const response = await request(app)
       .post("/api/posts")
       .set("Authorization", "Bearer valid-token")
