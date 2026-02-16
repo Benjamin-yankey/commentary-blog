@@ -13,14 +13,3 @@ class Logger {
 }
 
 module.exports = new Logger();
-
-app.get("/api/health", async (req, res) => {
-  const dbHealth = await pool.query("SELECT NOW()");
-
-  res.json({
-    status: "healthy",
-    timestamp: new Date().toISOString(),
-    database: dbHealth.rows ? "connected" : "disconnected",
-    uptime: process.uptime(),
-  });
-});

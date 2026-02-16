@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Hero from '../components/Hero';
 import PostCard from '../components/PostCard';
@@ -12,11 +12,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
 
-  useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage]);
-
-  const fetchPosts = async (page) => {
+  const fetchPosts = useCallback(async (page) => {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:5001/api/posts?page=${page}&limit=9`);
@@ -28,7 +24,11 @@ const Home = () => {
       setError('Failed to load posts');
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPosts(currentPage);
+  }, [currentPage, fetchPosts]);
 
   if (loading) {
     return (
