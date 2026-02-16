@@ -17,7 +17,7 @@ const PostList = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/posts?page=${page}&limit=10`
+        `http://localhost:5001/api/posts?page=${page}&limit=10`
       );
       const data = await response.json();
 

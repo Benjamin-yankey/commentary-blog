@@ -15,7 +15,7 @@ const PostDetail = () => {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+      const response = await fetch(`http://localhost:5001/api/posts/${id}`);
       const data = await response.json();
 
       if (!response.ok) {
