@@ -85,7 +85,9 @@ describe("GET /api/posts/:id", () => {
     const response = await request(app).get("/api/posts/1");
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("post");
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("title");
+    expect(response.body).toHaveProperty("id");
   });
 
   test("should return 404 for non-existent post", async () => {
