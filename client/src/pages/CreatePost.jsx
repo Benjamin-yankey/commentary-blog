@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const CreatePost = () => {
@@ -122,6 +122,32 @@ console.log(c);
 The async/await pattern has revolutionized how we write asynchronous JavaScript code.`);
   };
 
+  const { id } = useParams(); // Import useParams at top
+  const isEditing = !!id;
+
+  // Fetch post data if editing
+  useEffect(() => {
+    if (isEditing) {
+      const fetchPostData = async () => {
+        try {
+          const response = await axios.get(`/api/posts/${id}`);
+          const post = response.data;
+          setTitle(post.title);
+          setContent(post.content);
+          setCoverImage(post.image_url);
+          // If tags were saved, set them here. Currently API doesn't return tags explicitly in correct format for this state, 
+          // but we can default or parse if we had them. For now, we'll keep default or empty.
+          // Assuming category is a single value in DB but UI handles "tags" array.
+          // setTags([post.category]); 
+        } catch (err) {
+          console.error("Failed to fetch post for editing", err);
+          setError("Failed to load post data");
+        }
+      };
+      fetchPostData();
+    }
+  }, [id, isEditing]);
+
   const handlePublish = async () => {
     if (!title.trim() || !content.trim()) {
       setError('Title and content are required');
@@ -136,22 +162,35 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
     try {
       setSaving(true);
       const token = localStorage.getItem('token');
-      
-      const response = await axios.post('/api/posts', {
+      const payload = {
         title: title.trim(),
         content: content.trim(),
         category: tags[0] || 'general',
         image_url: coverImage,
         image_alt: title
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      };
+      
+      let response;
+      if (isEditing) {
+        response = await axios.put(`/api/posts/${id}`, payload, {
+           headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      } else {
+        response = await axios.post('/api/posts', payload, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
 
       if (response.data) {
-        navigate('/');
+        // Redirect to the post (id might be separate for create vs update response, but for update we have it)
+        const targetId = isEditing ? id : response.data.post.id;
+        navigate(`/posts/${targetId}`);
       }
     } catch (err) {
       console.error('Publish error:', err);
@@ -182,7 +221,7 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
               Back
             </button>
             <button onClick={handlePublish} disabled={saving} className="btn btn-primary px-6 py-2 text-[13px]">
-              Publish Now
+              {isEditing ? (saving ? 'Updating...' : 'Update Post') : (saving ? 'Publishing...' : 'Publish Now')}
             </button>
           </div>
         </div>
