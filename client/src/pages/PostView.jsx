@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import CommentSection from '../components/CommentSection';
 
 const PostView = () => {
   const { id } = useParams();
@@ -128,23 +129,54 @@ const PostView = () => {
             </div>
           </div>
           
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={toggleLike}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
-                liked 
-                  ? 'bg-[rgba(248,81,73,0.1)] text-[var(--red)] border border-[var(--red)]' 
-                  : 'bg-[var(--bg2)] text-[var(--text2)] border border-[var(--border)] hover:border-[var(--accent)]'
-              }`}
-            >
-              <span>{liked ? '♥' : '♡'}</span>
-              <span className="mono text-[13px] font-bold">{likeCount}</span>
-            </button>
-            <button className="btn btn-outline px-4 py-2 text-[13px]">
-              Comment
-            </button>
-          </div>
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+              {localStorage.getItem('username') === post.username && (
+                <>
+                  <button 
+                    onClick={() => navigate(`/edit-post/${post.id}`)}
+                    className="btn btn-outline px-4 py-2 text-[13px] text-[var(--text2)] border-[var(--text2)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    onClick={async () => {
+                      if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                        try {
+                          await axios.delete(`/api/posts/${post.id}`, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                          });
+                          navigate('/');
+                        } catch (err) {
+                          console.error('Delete error:', err);
+                          alert('Failed to delete post');
+                        }
+                      }
+                    }}
+                    className="btn btn-outline px-4 py-2 text-[13px] text-[var(--red)] border-[var(--red)] hover:bg-[rgba(248,81,73,0.1)]"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+              <button 
+                onClick={toggleLike}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                  liked 
+                    ? 'bg-[rgba(248,81,73,0.1)] text-[var(--red)] border border-[var(--red)]' 
+                    : 'bg-[var(--bg2)] text-[var(--text2)] border border-[var(--border)] hover:border-[var(--accent)]'
+                }`}
+              >
+                <span>{liked ? '♥' : '♡'}</span>
+                <span className="mono text-[13px] font-bold">{likeCount}</span>
+              </button>
+              <button 
+                onClick={() => document.querySelector('textarea')?.focus()}
+                className="btn btn-outline px-4 py-2 text-[13px]"
+              >
+                Comment
+              </button>
+            </div>
         </div>
 
         {/* Content */}
@@ -198,52 +230,7 @@ const PostView = () => {
         </div>
 
         {/* Comments Section */}
-        <div className="mt-12">
-          <h3 className="text-[24px] mono font-bold text-[var(--text)] mb-6">
-            Comments <span className="text-[var(--text3)]">(47)</span>
-          </h3>
-          
-          {/* Comment Input */}
-          <div className="card p-6 mb-8">
-            <textarea 
-              placeholder="Share your thoughts..."
-              className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-4 py-3 text-[14px] text-[var(--text)] outline-none focus:border-[var(--accent)] resize-none"
-              rows={3}
-            />
-            <div className="flex justify-end mt-3">
-              <button className="btn btn-primary px-6 py-2 text-[13px]">Post Comment</button>
-            </div>
-          </div>
-
-          {/* Sample Comments */}
-          <div className="space-y-6">
-            {[
-              { author: 'devloop42', avatar: 'D', comment: 'Great article! This really helped me understand async/await better.', time: '2 hours ago', likes: 12 },
-              { author: 'css_witch', avatar: 'C', comment: 'The code examples are super clear. Bookmarking this for future reference!', time: '5 hours ago', likes: 8 }
-            ].map((comment, idx) => (
-              <div key={idx} className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--blue)] flex items-center justify-center font-bold mono text-[var(--bg)]">
-                  {comment.avatar}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-bold text-[14px] text-[var(--text)]">{comment.author}</span>
-                    <span className="text-[12px] text-[var(--text3)] mono">{comment.time}</span>
-                  </div>
-                  <p className="text-[14px] text-[var(--text2)] mb-3">{comment.comment}</p>
-                  <div className="flex items-center gap-4 text-[13px]">
-                    <button className="text-[var(--text3)] hover:text-[var(--accent)] transition">
-                      ♡ {comment.likes}
-                    </button>
-                    <button className="text-[var(--text3)] hover:text-[var(--accent)] transition">
-                      Reply
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <CommentSection postId={id} />
       </article>
     </div>
   );
