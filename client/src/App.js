@@ -1,30 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import PostList from "./components/PostList";
-import PostDetail from "./components/PostDetail";
-import PostForm from "./components/PostForm";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import PostView from "./pages/PostView";
+import CreatePost from "./pages/CreatePost";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
 import "./App.css";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <nav className="navbar">
-          <div className="nav-container">
-            <Link to="/" className="nav-logo">
-              Commentary Blog
-            </Link>
-            <div className="nav-links">
-              <Link to="/">Home</Link>
-              <Link to="/create">Create Post</Link>
-            </div>
-          </div>
-        </nav>
+      <div className="App bg-gray-50 min-h-screen">
+        <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<PostList />} />
-            <Route path="/posts/:id" element={<PostDetail />} />
-            <Route path="/create" element={<PostForm />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/posts/:id" element={<PostView />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
       </div>
