@@ -26,21 +26,16 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] User can access registration form at /register
-- [ ] Form requires: username, email, password, confirm password
-- [ ] Username must be unique (3-20 characters)
-- [ ] Email must be valid format and unique
-- [ ] Password must be at least 8 characters with 1 number
+- [ ] User can access registration form at `/register`
+- [ ] Form requires: `username`, `email`, `password`, `confirm password`
+- [ ] `Username` must be unique (3-20 characters)
+- [ ] `Email` must be valid format and unique
+- [ ] `Password` must be at least 8 characters with 1 number
 - [ ] Passwords must match
 - [ ] Form displays validation errors clearly
-- [ ] Password is hashed before storage
+- [ ] Password is hashed before storage (bcrypt)
 - [ ] Successful registration redirects to login page
-- [ ] User data stored in database with created_at timestamp
-
-**Technical Notes:**
-
-- Use bcrypt for password hashing
-- Validate on both client and server side
+- [ ] User data stored in database with `created_at` timestamp
 
 ---
 
@@ -55,19 +50,14 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] User can access login form at /login
-- [ ] Form accepts email and password
+- [ ] User can access login form at `/login`
+- [ ] Form accepts `email` and `password`
 - [ ] System validates credentials against database
-- [ ] Invalid credentials show error message
+- [ ] Invalid credentials show error message ("Invalid email or password")
 - [ ] Successful login creates session/JWT token
-- [ ] User redirected to dashboard after login
+- [ ] User redirected to dashboard/home after login
 - [ ] Login state persists across page refreshes
 - [ ] "Remember me" option available
-
-**Technical Notes:**
-
-- Implement JWT or session-based auth
-- Token expires after 24 hours
 
 ---
 
@@ -82,21 +72,15 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] User can access "New Post" button from dashboard
-- [ ] Form includes: title, content, optional tags
-- [ ] Title is required (5-200 characters)
-- [ ] Content is required (minimum 50 characters)
-- [ ] User can preview post before publishing
-- [ ] User can save as draft or publish
-- [ ] Published posts visible to all users
-- [ ] Drafts only visible to author
+- [ ] User can access "New Post" button from navbar
+- [ ] Form includes: `title`, `content`, optional `tags`
+- [ ] `Title` is required (5-200 characters)
+- [ ] `Content` is required (minimum 50 characters)
+- [ ] User can preview post before publishing (optional)
+- [ ] User can publish immediately
+- [ ] Published posts are visible to all users
 - [ ] Post shows author name and timestamp
 - [ ] Success message shown after publishing
-
-**Technical Notes:**
-
-- Store post status: 'draft' or 'published'
-- Use rich text editor (TinyMCE or similar)
 
 ---
 
@@ -112,18 +96,12 @@ A user story is considered "Done" when:
 **Acceptance Criteria:**
 
 - [ ] Homepage displays all published posts
-- [ ] Posts show: title, author, date, excerpt (first 150 chars)
-- [ ] Posts sorted by newest first
+- [ ] Posts show: `title`, `author`, `date`, `excerpt` (first 150 chars)
+- [ ] Posts are sorted by newest first
 - [ ] Each post is clickable to view full content
 - [ ] Show "No posts yet" message if empty
 - [ ] Page loads in under 2 seconds
-- [ ] Display shows 10 posts per page
-- [ ] Pagination available if more than 10 posts
-
-**Technical Notes:**
-
-- Implement pagination or infinite scroll
-- Cache post list for performance
+- [ ] Display shows 10 posts per page (Pagination)
 
 ---
 
@@ -138,18 +116,12 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] Clicking post opens dedicated page (/post/:id)
-- [ ] Page displays: full title, author, date, full content
-- [ ] Content formatting preserved (paragraphs, links, etc.)
+- [ ] Clicking post opens dedicated page (`/posts/:id`)
+- [ ] Page displays: full `title`, `author`, `date`, full `content`
+- [ ] Content formatting is preserved (paragraphs, headers, code blocks)
 - [ ] "Back to all posts" link available
-- [ ] Page is shareable via URL
 - [ ] 404 page shown for non-existent posts
 - [ ] Author can see "Edit" and "Delete" buttons on their own posts
-
-**Technical Notes:**
-
-- Use slug or ID in URL
-- Sanitize HTML to prevent XSS
 
 ---
 
@@ -165,20 +137,13 @@ A user story is considered "Done" when:
 **Acceptance Criteria:**
 
 - [ ] Comment section appears below blog post
-- [ ] Only logged-in users see comment form
+- [ ] Only logged-in users see comment input form
 - [ ] Form has textarea for comment text
-- [ ] Comment must be 1-500 characters
-- [ ] Submit button posts comment
-- [ ] New comment appears immediately in list
-- [ ] Comments show: author name, timestamp, text
-- [ ] Comments sorted oldest first
-- [ ] Author name links to user profile (if implemented)
+- [ ] Comment must be non-empty
+- [ ] Submit button posts comment and updates list immediately
+- [ ] Comments show: `author name`, `timestamp`, `text`
+- [ ] Comments are sorted oldest first (or newest first)
 - [ ] Success message after posting
-
-**Technical Notes:**
-
-- Store post_id with each comment
-- Implement rate limiting (max 10 comments/minute)
 
 ---
 
@@ -193,18 +158,12 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] "Delete" button visible only to post author
-- [ ] Clicking delete shows confirmation dialog
+- [ ] "Delete" button visible ONLY to post author
+- [ ] Clicking delete shows confirmation dialog ("Are you sure?")
 - [ ] Confirmation required before deletion
-- [ ] Post and all comments removed from database
-- [ ] User redirected to dashboard after deletion
+- [ ] Post and associated comments are removed from database
+- [ ] User redirected to homepage after deletion
 - [ ] Success message displayed
-- [ ] Deleted posts return 404 if accessed via old URL
-
-**Technical Notes:**
-
-- Cascade delete comments when post deleted
-- Consider soft delete for data recovery
 
 ---
 
@@ -219,18 +178,12 @@ A user story is considered "Done" when:
 
 **Acceptance Criteria:**
 
-- [ ] "Edit" button visible only to post author
-- [ ] Edit form pre-populated with existing content
-- [ ] User can modify title, content, tags
-- [ ] "Save Changes" button updates post
-- [ ] "Last edited" timestamp shown on post
+- [ ] "Edit" button visible ONLY to post author
+- [ ] Clicking edit opens form pre-populated with existing content
+- [ ] User can modify `title`, `content`, `tags`
+- [ ] "Update Post" button saves changes
 - [ ] Changes visible immediately after saving
-- [ ] User can cancel editing without changes
-
-**Technical Notes:**
-
-- Store updated_at timestamp
-- Consider version history for future
+- [ ] User can cancel editing without saving
 
 ---
 
@@ -247,30 +200,5 @@ A user story is considered "Done" when:
 
 - [ ] "Logout" button visible when logged in
 - [ ] Clicking logout clears session/token
-- [ ] User redirected to homepage
+- [ ] User redirected to homepage/login
 - [ ] User cannot access protected routes after logout
-- [ ] Confirmation message displayed
-
----
-
-## Backlog Prioritization (for Sprint Planning)
-
-### Sprint 1 (Must Have - Foundation):
-
-1. User Registration (5 points)
-2. User Login (3 points)
-3. User Logout (1 point)
-   **Total: 9 points**
-
-### Sprint 2 (Must Have - Core Features):
-
-1. Create Blog Post (5 points)
-2. View All Blog Posts (3 points)
-3. View Individual Post (3 points)
-   **Total: 11 points**
-
-### Future Sprints (Nice to Have):
-
-- Add Comments (5 points)
-- Delete Post (2 points)
-- Edit Post (3 points)

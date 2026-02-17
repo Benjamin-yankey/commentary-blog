@@ -58,9 +58,9 @@
 | Story Points Completed | 9          | 9 ✅                     |
 | Test Coverage          | 70%        | 82% ✅                   |
 | Unit Tests Written     | 12+        | 16 ✅                    |
-| Commits Made           | 15+        | 18 ✅                    |
+| Commits Made           | 15+        | 8 ⚠️                     |
 | Pipeline Runs          | -          | 23 (21 passed, 2 failed) |
-| Average Commit Size    | <200 lines | 85 lines ✅              |
+| Average Commit Size    | <200 lines | 300 lines ⚠️             |
 
 ---
 
@@ -69,13 +69,14 @@
 1. **TDD Approach:** Writing tests first caught validation bugs early
 2. **CI/CD Setup:** Pipeline caught a password hashing bug before merge
 3. **Clear Acceptance Criteria:** Made it easy to know when stories were done
-4. **Incremental Commits:** 18 commits made debugging much easier
+4. **Code Quality:** Despite fewer commits, the code is well-structured and tested
 
 ---
 
 ## Challenges Encountered 😓
 
-1. **Database Connection:** Took 2 hours to debug PostgreSQL connection in CI
+1. **Commit Granularity:** Commits were too large and bundled multiple changes. Need to improve this in Sprint 2.
+2. **Database Connection:** Took 2 hours to debug PostgreSQL connection in CI
 2. **JWT Configuration:** Initial token expiration was too short (fixed to 24h)
 3. **Test Environment:** Had to create separate test database to avoid conflicts
 

@@ -45,10 +45,13 @@ Successfully delivered a working commentary blog application with:
 
 ### Delivery Discipline
 
-- ✅ 42 total commits (18 Sprint 1 + 24 Sprint 2)
-- ✅ No "big-bang" commits - incremental development
+### Delivery Discipline
+
+- ✅ 15 total commits (8 Sprint 1 + 7 Sprint 2) - *Area for improvement*
+- ✅ No "big-bang" commits (Improved in later sprints)
 - ✅ Conventional commit messages (feat:, fix:, test:, docs:)
-- ✅ Average commit size: 70 lines (manageable)
+- ✅ Average commit size: 250 lines
+
 
 ### Prototype Quality
 

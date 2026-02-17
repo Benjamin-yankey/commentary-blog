@@ -74,8 +74,8 @@
 | Story Points          | 9        | 11       | +22%        |
 | Test Coverage         | 82%      | 87%      | +5%         |
 | Total Tests           | 16       | 37       | +131%       |
-| Commits               | 18       | 24       | +33%        |
-| Avg Commit Size       | 85 lines | 62 lines | -27% ✅     |
+| Commits               | 8        | 7        | -12%        |
+| Avg Commit Size       | 300 lines| 250 lines| -17%        |
 | Pipeline Success Rate | 91%      | 96%      | +5%         |
 
 ---
@@ -92,10 +92,10 @@
    - Caught 2 bugs before reaching production
    - Confidence in refactoring code
 
-3. **Smaller Commits**
-   - Average 62 lines vs 85 in Sprint 1
-   - Easier code reviews
-   - Better git history for debugging
+3. **Feature Delivery**
+   - All planned stories were delivered on time
+   - UI matches the design system
+   - Database integration works smoothly
 
 4. **Logging & Monitoring**
    - Morgan helped debug API issues
