@@ -258,9 +258,9 @@ const Register = () => {
             />
             <span>
               I agree to DevLog's{' '}
-              <a href="#" className="text-[var(--accent)] hover:underline">Terms of Service</a>
+              <a href="/terms" className="text-[var(--accent)] hover:underline">Terms of Service</a>
               {' '}and{' '}
-              <a href="#" className="text-[var(--accent)] hover:underline">Privacy Policy</a>.
+              <a href="/privacy" className="text-[var(--accent)] hover:underline">Privacy Policy</a>.
               I'm at least 13 years old.
             </span>
           </label>

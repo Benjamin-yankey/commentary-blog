@@ -46,10 +46,10 @@ const Footer = () => {
           <div>
             <h4 className="mono text-[12px] font-bold text-[var(--text2)] uppercase tracking-widest mb-6">Social</h4>
             <ul className="space-y-3 text-[13px]">
-              <li><a href="#" className="text-[var(--text3)] hover:text-[var(--accent)] transition">GitHub</a></li>
-              <li><a href="#" className="text-[var(--text3)] hover:text-[var(--accent)] transition">Twitter / X</a></li>
-              <li><a href="#" className="text-[var(--text3)] hover:text-[var(--accent)] transition">Discord</a></li>
-              <li><a href="#" className="text-[var(--text3)] hover:text-[var(--accent)] transition">RSS Feed</a></li>
+              <li><a href="https://github.com" className="text-[var(--text3)] hover:text-[var(--accent)] transition">GitHub</a></li>
+              <li><a href="https://twitter.com" className="text-[var(--text3)] hover:text-[var(--accent)] transition">Twitter / X</a></li>
+              <li><a href="https://discord.com" className="text-[var(--text3)] hover:text-[var(--accent)] transition">Discord</a></li>
+              <li><a href="/rss" className="text-[var(--text3)] hover:text-[var(--accent)] transition">RSS Feed</a></li>
             </ul>
           </div>
         </div>
@@ -57,9 +57,9 @@ const Footer = () => {
         <div className="pt-8 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center text-[13px] text-[var(--text3)]">
           <p className="mono">© 2026 DevLog · Built with ❤️ for developers</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-[var(--text)] transition">Privacy</a>
-            <a href="#" className="hover:text-[var(--text)] transition">Terms</a>
-            <a href="#" className="hover:text-[var(--text)] transition">Cookies</a>
+            <a href="/privacy" className="hover:text-[var(--text)] transition">Privacy</a>
+            <a href="/terms" className="hover:text-[var(--text)] transition">Terms</a>
+            <a href="/cookies" className="hover:text-[var(--text)] transition">Cookies</a>
           </div>
         </div>
       </div>
