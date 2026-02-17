@@ -131,7 +131,7 @@ const getPostById = async (req, res) => {
         u.bio
        FROM posts p
        JOIN users u ON p.author_id = u.id
-       WHERE p.id = $1 AND p.status = 'published'`,
+       WHERE p.id = $1`, // Removed status check to allow authors to see their own drafts (future proofing) or edits
       [id]
     );
 
@@ -142,9 +142,88 @@ const getPostById = async (req, res) => {
     const post = result.rows[0];
     post.avatar_url = post.avatar_url || generateAvatar(post.username);
 
-    res.json({ post });
+    res.json(post);
   } catch (error) {
     logger.error('Get post error', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+/**
+ * Delete a post
+ * Ensures only the author can delete their post.
+ */
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Check ownership
+    const check = await pool.query("SELECT author_id FROM posts WHERE id = $1", [id]);
+    
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    
+    if (check.rows[0].author_id !== userId) {
+      return res.status(403).json({ error: "Unauthorized: You can only delete your own posts" });
+    }
+
+    // Delete post - Cascase will handle comments/categories
+    await pool.query("DELETE FROM posts WHERE id = $1", [id]);
+    
+    logger.info('Post deleted', { postId: id, userId });
+    res.json({ message: "Post deleted successfully" });
+
+  } catch (error) {
+    logger.error('Delete post error', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+/**
+ * Update a post
+ * Ensures only the author can edit.
+ */
+const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { title, content, image_url, image_alt, status } = req.body;
+
+    // Check ownership
+    const check = await pool.query("SELECT author_id FROM posts WHERE id = $1", [id]);
+    
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    
+    if (check.rows[0].author_id !== userId) {
+      return res.status(403).json({ error: "Unauthorized: You can only edit your own posts" });
+    }
+
+    // Build update query dynamically
+    // Simple version: Update basic fields
+    const excerpt = content ? (content.substring(0, 150) + (content.length > 150 ? '...' : '')) : undefined;
+    
+    await pool.query(
+      `UPDATE posts 
+       SET title = COALESCE($1, title),
+           content = COALESCE($2, content),
+           excerpt = COALESCE($3, excerpt),
+           image_url = COALESCE($4, image_url),
+           image_alt = COALESCE($5, image_alt),
+           status = COALESCE($6, status),
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $7`,
+      [title, content, excerpt, image_url, image_alt, status, id]
+    );
+
+    logger.info('Post updated', { postId: id, userId });
+    res.json({ message: "Post updated successfully" });
+
+  } catch (error) {
+    logger.error('Update post error', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -153,6 +232,8 @@ module.exports = {
   createPost,
   getAllPosts,
   getPostById,
+  deletePost,
+  updatePost,
   getRandomPostImage,
   generateAvatar
 };
