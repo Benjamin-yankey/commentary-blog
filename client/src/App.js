@@ -5,23 +5,33 @@ import PostView from "./pages/PostView";
 import CreatePost from "./pages/CreatePost";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Tags from "./pages/Tags";
+import Leaderboard from "./pages/Leaderboard";
 import Navbar from "./components/Navbar";
-import "./App.css";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
-      <div className="App bg-gray-50 min-h-screen">
+      <div className="App flex flex-col min-h-screen">
         <Navbar />
-        <main>
+        {/* Padding for fixed nav */}
+        <div className="h-[60px]"></div>
+        
+        <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/explore" element={<Home />} />
+            <Route path="/tags" element={<Tags />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/posts/:id" element={<PostView />} />
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </main>
+
+        <Footer />
       </div>
     </Router>
   );

@@ -18,9 +18,11 @@ app.get("/health", (req, res) => {
 // API Route handlers
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/categories", categoryRoutes);
 
 /**
  * Production Static Content Handlers

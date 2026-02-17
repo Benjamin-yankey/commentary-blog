@@ -11,6 +11,9 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('For You');
+
+  const filters = ['For You', 'Trending', 'Latest', 'JavaScript', 'React', 'Python', 'Rust', 'AI/ML'];
 
   const fetchPosts = useCallback(async (page) => {
     try {
@@ -30,22 +33,22 @@ const Home = () => {
     fetchPosts(currentPage);
   }, [currentPage, fetchPosts]);
 
-  if (loading) {
+  if (loading && posts.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--bg)]">
         <Hero />
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-6 py-12">
           <LoadingSpinner />
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error && posts.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--bg)]">
         <Hero />
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-6 py-12">
           <ErrorMessage message={error} onRetry={() => fetchPosts(currentPage)} />
         </div>
       </div>
@@ -53,76 +56,151 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-[var(--bg)]">
       <Hero />
 
-      {/* Posts Grid */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 id="posts-section" className="text-3xl font-bold text-gray-800">Latest Posts</h2>
-          <div className="flex items-center gap-2 text-gray-600">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-            <span>{pagination?.totalPosts || 0} posts</span>
-          </div>
+      {/* Filter Bar */}
+      <div className="border-b border-[var(--border)] overflow-x-auto">
+        <div className="container mx-auto px-6 py-4 flex gap-2 min-w-max">
+          {filters.map(filter => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-4 py-2 rounded-full text-[13px] font-semibold transition whitespace-nowrap ${
+                activeFilter === filter
+                  ? 'bg-[var(--accent-glow)] text-[var(--accent)] border border-[rgba(0,255,157,0.4)]'
+                  : 'border border-[var(--border)] text-[var(--text2)] hover:border-[var(--border2)]'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <p className="text-gray-500 text-lg">No posts yet. Be the first to write!</p>
-          </div>
-        ) : (
-          <>
-            {/* Posts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {posts.map(post => (
-                <PostCard key={post.id} post={post} />
-              ))}
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
+          {/* Posts Feed */}
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <h2 id="posts-section" className="text-[24px] mono font-bold text-[var(--text)]">
+                Latest Posts
+              </h2>
+              <div className="flex items-center gap-2 text-[var(--text3)] text-[13px]">
+                <span className="mono text-[var(--accent)]">{pagination?.totalPosts || 0}</span>
+                <span>posts</span>
+              </div>
             </div>
 
-            {/* Pagination */}
-            {pagination && pagination.totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-                
-                <div className="flex gap-2">
-                  {[...Array(pagination.totalPages)].map((_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => setCurrentPage(i + 1)}
-                      className={`w-10 h-10 rounded-lg ${
-                        currentPage === i + 1
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white border border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      {i + 1}
-                    </button>
+            {posts.length === 0 ? (
+              <div className="card p-12 text-center">
+                <div className="text-[48px] mb-4">📝</div>
+                <p className="text-[var(--text2)] text-[16px] mb-4">No posts yet. Be the first to write!</p>
+                <a href="/create-post" className="btn btn-primary">Start Writing</a>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
+                  {posts.map((post, index) => (
+                    <div key={post.id} className="animate-up" style={{ animationDelay: `${index * 80}ms` }}>
+                      <PostCard post={post} />
+                    </div>
                   ))}
                 </div>
 
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
-                  disabled={currentPage === pagination.totalPages}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
+                {/* Pagination */}
+                {pagination && pagination.totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="btn btn-ghost px-4 py-2 disabled:opacity-30"
+                    >
+                      ← Previous
+                    </button>
+                    
+                    <div className="flex gap-2">
+                      {[...Array(Math.min(pagination.totalPages, 5))].map((_, i) => (
+                        <button
+                          key={i + 1}
+                          onClick={() => setCurrentPage(i + 1)}
+                          className={`w-10 h-10 rounded-lg mono font-bold transition ${
+                            currentPage === i + 1
+                              ? 'bg-[var(--accent)] text-[var(--bg)]'
+                              : 'bg-[var(--bg2)] border border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent)]'
+                          }`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
+                      disabled={currentPage === pagination.totalPages}
+                      className="btn btn-ghost px-4 py-2 disabled:opacity-30"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Trending Tags */}
+            <div className="card p-6">
+              <h3 className="text-[13px] mono font-bold text-[var(--text2)] uppercase tracking-widest mb-4">
+                🔥 Trending Tags
+              </h3>
+              <div className="space-y-3">
+                {['JavaScript', 'React', 'Python', 'Rust', 'AI/ML', 'DevOps'].map((tag, idx) => (
+                  <div key={tag} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0 hover:translate-x-1 transition cursor-pointer">
+                    <span className="text-[14px] text-[var(--text)] hover:text-[var(--accent)] transition">
+                      ⚡ #{tag}
+                    </span>
+                    <span className="text-[12px] mono text-[var(--text3)]">
+                      {(Math.random() * 5 + 1).toFixed(1)}k posts
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Who to Follow */}
+            <div className="card p-6">
+              <h3 className="text-[13px] mono font-bold text-[var(--text2)] uppercase tracking-widest mb-4">
+                👥 Who to Follow
+              </h3>
+              <div className="space-y-4">
+                {['0xKira', 'rustacean_dev', 'css_witch', 'mlwhisperer'].map(user => (
+                  <div key={user} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--blue)] flex items-center justify-center font-bold mono text-[var(--bg)] text-[12px]">
+                      {user[0].toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-[14px] font-bold text-[var(--text)]">{user}</div>
+                      <div className="text-[12px] mono text-[var(--text3)]">@{user}</div>
+                    </div>
+                    <button className="btn btn-outline btn-sm px-3 py-1 text-[11px]">Follow</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA Card */}
+            <div className="card p-6 bg-gradient-to-br from-[rgba(0,255,157,0.05)] to-[rgba(88,166,255,0.05)] border-[rgba(0,255,157,0.2)]">
+              <h3 className="text-[16px] font-bold text-[var(--accent)] mb-2">✨ Write Your First Post</h3>
+              <p className="text-[13px] text-[var(--text2)] mb-4">
+                Share your knowledge with thousands of developers worldwide.
+              </p>
+              <a href="/create-post" className="btn btn-primary w-full">Start Writing ✍️</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

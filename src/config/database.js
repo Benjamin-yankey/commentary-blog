@@ -70,19 +70,22 @@ const initDatabase = async () => {
       )
     `);
 
-    // Insert sample categories if they don't exist
+    // Insert sample categories if they don't exist (Updated for DevLog)
     await pool.query(`
       INSERT INTO categories (name, icon_url, color) 
       VALUES 
-        ('Technology', 'https://api.iconify.design/mdi/laptop.svg', '#3B82F6'),
-        ('Travel', 'https://api.iconify.design/mdi/airplane.svg', '#10B981'),
-        ('Food', 'https://api.iconify.design/mdi/food.svg', '#F59E0B'),
-        ('Lifestyle', 'https://api.iconify.design/mdi/home-heart.svg', '#EC4899'),
-        ('Opinion', 'https://api.iconify.design/mdi/comment-text.svg', '#8B5CF6')
+        ('JavaScript', 'https://api.iconify.design/mdi/language-javascript.svg', '#f7df1e'),
+        ('React', 'https://api.iconify.design/mdi/react.svg', '#61dafb'),
+        ('Python', 'https://api.iconify.design/mdi/language-python.svg', '#3776ab'),
+        ('Rust', 'https://api.iconify.design/mdi/language-rust.svg', '#dea584'),
+        ('AI & ML', 'https://api.iconify.design/mdi/robot.svg', '#ff7eb6'),
+        ('DevOps', 'https://api.iconify.design/mdi/docker.svg', '#2496ed'),
+        ('TypeScript', 'https://api.iconify.design/mdi/language-typescript.svg', '#3178c6'),
+        ('CSS', 'https://api.iconify.design/mdi/language-css3.svg', '#1572b6')
       ON CONFLICT (name) DO NOTHING
     `);
 
-    console.log("Postgres Database initialized successfully with categories");
+    console.log("DevLog Database initialized with Tech Categories");
   } catch (err) {
     console.error("Database initialization error:", err);
   }

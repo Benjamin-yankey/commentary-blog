@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('username');
-    
     if (token && user) {
       setIsLoggedIn(true);
       setUsername(user);
@@ -21,72 +21,87 @@ const Navbar = () => {
     localStorage.removeItem('username');
     setIsLoggedIn(false);
     navigate('/');
-    window.location.reload(); // Simple way to refresh state across app
+    window.location.reload();
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">CB</span>
-            </div>
-            <span className="text-xl font-bold text-gray-800">Commentary Blog</span>
+    <nav className="fixed top-0 w-full h-[60px] bg-[rgba(8,12,16,0.85)] backdrop-blur-[20px] border-b border-[var(--border)] z-[1000] flex items-center px-6">
+      <div className="flex items-center space-x-8 flex-1">
+        {/* Logo */}
+        <Link to="/" className="flex items-center mono text-[18px] font-extrabold group">
+          <span className="text-[var(--accent)] group-hover:scale-110 transition-transform">{"{"}</span>
+          <span className="text-[var(--text2)] mx-1">Dev</span>
+          <span className="text-[var(--text)]">Log</span>
+          <span className="text-[var(--accent)]">{"}"}</span>
+        </Link>
+
+        {/* Links */}
+        <div className="hidden md:flex items-center space-x-2">
+          <Link 
+            to="/" 
+            className={`px-3 py-1.5 rounded-md text-[13px] font-semibold transition ${isActive('/') ? 'bg-[var(--bg3)] text-[var(--accent)]' : 'text-[var(--text2)] hover:text-[var(--text)]'}`}
+          >
+            Explore
           </Link>
-
-          {/* Navigation Links */}
-          <div className="flex items-center space-x-4">
-            <Link 
-              to="/" 
-              className="text-gray-700 hover:text-blue-600 font-semibold transition"
-            >
-              Home
-            </Link>
-
-            {isLoggedIn ? (
-              <>
-                <Link
-                  to="/create-post"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
-                >
-                  ✍️ Write
-                </Link>
-                
-                <div className="flex items-center space-x-3 border-l pl-4">
-                  <img
-                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username)}`}
-                    alt={username}
-                    className="w-10 h-10 rounded-full border-2 border-blue-200"
-                  />
-                  <span className="text-gray-700 font-semibold hidden md:inline">{username}</span>
-                  <button
-                    onClick={handleLogout}
-                    className="text-red-600 hover:text-red-800 font-semibold transition"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="text-gray-700 hover:text-blue-600 font-semibold transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
+          <Link 
+            to="/tags" 
+            className={`px-3 py-1.5 rounded-md text-[13px] font-semibold transition ${isActive('/tags') ? 'bg-[var(--bg3)] text-[var(--accent)]' : 'text-[var(--text2)] hover:text-[var(--text)]'}`}
+          >
+            Tags
+          </Link>
+          <Link 
+            to="/leaderboard" 
+            className={`px-3 py-1.5 rounded-md text-[13px] font-semibold transition ${isActive('/leaderboard') ? 'bg-[var(--bg3)] text-[var(--accent)]' : 'text-[var(--text2)] hover:text-[var(--text)]'}`}
+          >
+            Leaderboard
+          </Link>
         </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="hidden lg:flex flex-1 justify-center">
+        <div className="relative w-[300px]">
+          <input 
+            type="text" 
+            placeholder="Search posts, tags, authors..."
+            className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-9 py-1.5 text-[13px] text-[var(--text)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-glow2)] outline-none transition"
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text3)]">🔍</span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center justify-end space-x-4 flex-1">
+        {isLoggedIn ? (
+          <>
+            <Link to="/create-post" className="btn btn-primary btn-sm px-4 py-1.5 text-[13px]">
+              ✍️ Write
+            </Link>
+            <div className="relative group">
+              <button className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center font-bold text-[var(--bg)] mono text-xs bg-gradient-to-br from-[var(--accent)] to-[var(--blue)]">
+                {username.charAt(0).toUpperCase()}
+              </button>
+              <div className="absolute right-0 mt-2 w-48 bg-[var(--bg2)] border border-[var(--border)] rounded-md shadow-xl hidden group-hover:block overflow-hidden">
+                <div className="px-4 py-2 border-b border-[var(--border)] text-[var(--text2)] text-xs">
+                  Signed in as <b>{username}</b>
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 text-sm text-[var(--red)] hover:bg-[var(--bg3)] transition"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="text-[var(--text2)] hover:text-[var(--text)] text-[13px] font-semibold">Sign In</Link>
+            <Link to="/register" className="btn btn-outline btn-sm px-4 py-1.5 text-[13px]">Sign Up</Link>
+          </>
+        )}
       </div>
     </nav>
   );
