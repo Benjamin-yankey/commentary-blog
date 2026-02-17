@@ -9,11 +9,7 @@ const PostList = () => {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    fetchPosts();
-  }, [page]);
-
-  const fetchPosts = async () => {
+  const fetchPosts = React.useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -32,7 +28,11 @@ const PostList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   if (loading) return <div className="loading">Loading posts...</div>;
   if (error) return <div className="error">{error}</div>;

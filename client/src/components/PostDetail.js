@@ -8,11 +8,7 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchPost();
-  }, [id]);
-
-  const fetchPost = async () => {
+  const fetchPost = React.useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`http://localhost:5001/api/posts/${id}`);
@@ -28,7 +24,11 @@ const PostDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchPost();
+  }, [fetchPost]);
 
   if (loading) return <div className="loading">Loading post...</div>;
   if (error) return <div className="error">{error}</div>;
