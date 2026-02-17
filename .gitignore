@@ -2,5 +2,6 @@ node_modules/
 .env
 coverage/
 *.log
-.env
 commentary_blog.db
+junit.xml
+client/build/

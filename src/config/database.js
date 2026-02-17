@@ -88,7 +88,10 @@ const initDatabase = async () => {
   }
 };
 
-initDatabase();
+// Only initialize database automatically when not running tests
+if (process.env.NODE_ENV !== "test") {
+  initDatabase();
+}
 
 module.exports = {
   query: (text, params) => pool.query(text, params)
