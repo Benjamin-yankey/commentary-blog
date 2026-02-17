@@ -1,3 +1,6 @@
+const { Pool } = require("pg");
+require("dotenv").config();
+
 /**
  * PostgreSQL Data Source Configuration
  * Uses 'pg' Pool for efficient connection management.
