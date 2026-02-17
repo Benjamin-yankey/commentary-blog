@@ -1,12 +1,11 @@
 const bcrypt = require("bcryptjs");
-const pool = require("../config/database-sqlite");
+const pool = require("../config/database");
 const generateToken = require("../utils/generateToken");
 
 const register = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
 
-    // Validation
     if (!username || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -16,9 +15,7 @@ const register = async (req, res) => {
     }
 
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: "Password must be at least 8 characters" });
+      return res.status(400).json({ error: "Password must be at least 8 characters" });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,39 +23,26 @@ const register = async (req, res) => {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    // Check if user exists
-    let userExists;
-    try {
-      userExists = await pool.query(
-        "SELECT * FROM users WHERE email = ? OR username = ?",
-        [email, username],
-      );
-    } catch (err) {
-      console.error("Database query error (check exists):", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    // Postgres syntax: $1, $2
+    let userExists = await pool.query(
+      "SELECT * FROM users WHERE email = $1 OR username = $2",
+      [email, username]
+    );
 
-    if (userExists && userExists.rows && userExists.rows.length > 0) {
+    if (userExists.rows.length > 0) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    // Hash password
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Insert user
-    let result;
-    try {
-      result = await pool.query(
-        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-        [username, email, passwordHash],
-      );
-    } catch (err) {
-      console.error("Database query error (insert user):", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    // Postgres syntax: $1, $2, $3 RETURNING id
+    let result = await pool.query(
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
+      [username, email, passwordHash]
+    );
 
-    const userId = (result && result.rows && result.rows[0] && result.rows[0].id) || 1;
+    const userId = result.rows[0].id;
     const token = generateToken(userId, username);
 
     res.status(201).json({ 
@@ -80,18 +64,12 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
-    let result;
-    try {
-      result = await pool.query(
-        "SELECT * FROM users WHERE email = ?",
-        [email]
-      );
-    } catch (err) {
-      console.error("Database query error (login):", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    let result = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
 
-    if (!result || !result.rows || result.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 

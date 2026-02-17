@@ -136,6 +136,16 @@ npm test
 npm test -- --coverage
 \`\`\`
 
+\`\`\`bash
+npm run test:ci
+\`\`\`
+
+### Running the application with docker-composeß
+
+\`\`\`bash
+docker-compose up -d
+\`\`\`
+
 ### Current Coverage: 87%
 
 - Unit Tests: 37

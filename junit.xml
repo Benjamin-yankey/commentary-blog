@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="13" failures="0" errors="0" time="1.547">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:29:42" time="0.72" tests="1">
+    <testcase classname=" renders blog title" name=" renders blog title" time="0.027">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/posts" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:29:43" time="0.27" tests="6">
+    <testcase classname="POST /api/posts should create post with valid data and auth" name="POST /api/posts should create post with valid data and auth" time="0.018">
+    </testcase>
+    <testcase classname="POST /api/posts should reject post creation without auth" name="POST /api/posts should reject post creation without auth" time="0.001">
+    </testcase>
+    <testcase classname="POST /api/posts should reject post with missing title" name="POST /api/posts should reject post with missing title" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/posts should return all posts with pagination" name="GET /api/posts should return all posts with pagination" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/posts/:id should return single post by id" name="GET /api/posts/:id should return single post by id" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/posts/:id should return 404 for non-existent post" name="GET /api/posts/:id should return 404 for non-existent post" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/auth/login" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:29:43" time="0.163" tests="2">
+    <testcase classname="POST /api/auth/login should login successfully with valid credentials" name="POST /api/auth/login should login successfully with valid credentials" time="0.057">
+    </testcase>
+    <testcase classname="POST /api/auth/login should fail with invalid credentials (user not found)" name="POST /api/auth/login should fail with invalid credentials (user not found)" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:29:43" time="0.111" tests="4">
+    <testcase classname="POST /api/auth/register should register new user with valid data" name="POST /api/auth/register should register new user with valid data" time="0.06">
+    </testcase>
+    <testcase classname="POST /api/auth/register should reject registration with invalid email" name="POST /api/auth/register should reject registration with invalid email" time="0.001">
+    </testcase>
+    <testcase classname="POST /api/auth/register should reject registration with short password" name="POST /api/auth/register should reject registration with short password" time="0">
+    </testcase>
+    <testcase classname="POST /api/auth/register should reject registration when passwords do not match" name="POST /api/auth/register should reject registration when passwords do not match" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>

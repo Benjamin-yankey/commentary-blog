@@ -1,9 +1,9 @@
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
-jest.mock("../src/config/database-sqlite");
+jest.mock("../src/config/database");
 
 const app = require("../src/app");
-const pool = require("../src/config/database-sqlite");
+const pool = require("../src/config/database");
 
 describe("POST /api/auth/login", () => {
   let passwordHash;

@@ -1,14 +1,14 @@
-const pool = require("../config/database-sqlite");
+const pool = require("../config/database");
 const logger = require("../monitoring/logger");
 
-// Helper function to get random Unsplash image
+// Helper function to get random image from LoremFlickr
 const getRandomPostImage = (category = 'blog') => {
-  return `https://source.unsplash.com/800x600/?${category}`;
+  return `https://loremflickr.com/800/600/${category}?random=${Math.random()}`;
 };
 
-// Helper function to generate avatar
+// Helper function to generate avatar from DiceBear
 const generateAvatar = (username) => {
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&size=200`;
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username)}`;
 };
 
 // Create post with image
@@ -22,7 +22,6 @@ const createPost = async (req, res) => {
     
     const userId = req.user.id;
 
-    // Validation
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' });
     }
@@ -35,25 +34,16 @@ const createPost = async (req, res) => {
       return res.status(400).json({ error: 'Content must be at least 50 characters' });
     }
 
-    // If no image provided, generate one based on category
     const finalImageUrl = image_url || getRandomPostImage(category || 'blog');
     const finalImageAlt = image_alt || `${title} - Blog Post Image`;
-
-    // Generate excerpt (first 150 characters)
     const excerpt = content.substring(0, 150) + (content.length > 150 ? '...' : '');
 
-    let result;
-    try {
-      result = await pool.query(
-        "INSERT INTO posts (title, content, excerpt, author_id, image_url, image_alt, status) VALUES (?, ?, ?, ?, ?, ?, 'published')",
-        [title, content, excerpt, userId, finalImageUrl, finalImageAlt]
-      );
-    } catch (err) {
-      logger.error('Create post database error', err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    const result = await pool.query(
+      "INSERT INTO posts (title, content, excerpt, author_id, image_url, image_alt, status) VALUES ($1, $2, $3, $4, $5, $6, 'published') RETURNING id",
+      [title, content, excerpt, userId, finalImageUrl, finalImageAlt]
+    );
 
-    const postId = result && result.rows && result.rows[0] ? result.rows[0].id : null;
+    const postId = result.rows[0].id;
     logger.info('Post created', { postId, userId });
 
     res.status(201).json({
@@ -66,49 +56,36 @@ const createPost = async (req, res) => {
   }
 };
 
-// Get all posts with images and author info
+// Get all posts
 const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 9;
     const offset = (page - 1) * limit;
 
-    let result;
-    try {
-      result = await pool.query(
-        `SELECT 
-          p.id, 
-          p.title, 
-          p.excerpt, 
-          p.image_url,
-          p.image_alt,
-          p.created_at,
-          u.username,
-          u.avatar_url
-         FROM posts p
-         JOIN users u ON p.author_id = u.id
-         WHERE p.status = 'published'
-         ORDER BY p.created_at DESC
-         LIMIT ? OFFSET ?`,
-        [limit, offset]
-      );
-    } catch (err) {
-      logger.error('Get posts database error', err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    const result = await pool.query(
+      `SELECT 
+        p.id, 
+        p.title, 
+        p.excerpt, 
+        p.image_url,
+        p.image_alt,
+        p.created_at,
+        u.username,
+        u.avatar_url
+       FROM posts p
+       JOIN users u ON p.author_id = u.id
+       WHERE p.status = 'published'
+       ORDER BY p.created_at DESC
+       LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
 
-    let countResult;
-    try {
-      countResult = await pool.query("SELECT COUNT(*) as count FROM posts WHERE status = 'published'", []);
-    } catch (err) {
-      logger.warn('Count posts database error', err);
-    }
-    
-    const totalCount = (countResult && countResult.rows && countResult.rows[0]) ? parseInt(countResult.rows[0].count) : 0;
+    const countResult = await pool.query("SELECT COUNT(*) as count FROM posts WHERE status = 'published'");
+    const totalCount = parseInt(countResult.rows[0].count);
     const totalPages = Math.ceil(totalCount / limit);
 
-    // Ensure all users have avatars
-    const posts = (result && result.rows ? result.rows : []).map(post => ({
+    const posts = result.rows.map(post => ({
       ...post,
       avatar_url: post.avatar_url || generateAvatar(post.username)
     }));
@@ -128,36 +105,28 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-// Get single post with full details
+// Get post by ID
 const getPostById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    let result;
-    try {
-      result = await pool.query(
-        `SELECT 
-          p.*,
-          u.username,
-          u.avatar_url,
-          u.bio
-         FROM posts p
-         JOIN users u ON p.author_id = u.id
-         WHERE p.id = ? AND p.status = 'published'`,
-        [id]
-      );
-    } catch (err) {
-      logger.error('Get post by ID database error', err);
-      return res.status(500).json({ error: "Database error" });
-    }
+    const result = await pool.query(
+      `SELECT 
+        p.*,
+        u.username,
+        u.avatar_url,
+        u.bio
+       FROM posts p
+       JOIN users u ON p.author_id = u.id
+       WHERE p.id = $1 AND p.status = 'published'`,
+      [id]
+    );
 
-    if (!result || !result.rows || result.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
     const post = result.rows[0];
-    
-    // Ensure avatar exists
     post.avatar_url = post.avatar_url || generateAvatar(post.username);
 
     res.json({ post });
