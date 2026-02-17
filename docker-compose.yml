@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=commentary_blog
+      - DB_HOST=db
+      - JWT_SECRET=your_jwt_secret_here
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=commentary_blog
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
