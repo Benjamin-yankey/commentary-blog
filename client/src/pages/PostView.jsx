@@ -14,7 +14,7 @@ const PostView = () => {
   const fetchPost = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5001/api/posts/${id}`);
+      const response = await axios.get(`/api/posts/${id}`);
       setPost(response.data.post);
       setLoading(false);
     } catch (err) {

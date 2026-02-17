@@ -104,7 +104,7 @@ const CreatePost = () => {
         submitData.image_url = '';
       }
 
-      await axios.post('http://localhost:5001/api/posts', submitData, {
+      await axios.post('/api/posts', submitData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

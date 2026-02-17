@@ -15,7 +15,7 @@ const Home = () => {
   const fetchPosts = useCallback(async (page) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5001/api/posts?page=${page}&limit=9`);
+      const response = await axios.get(`/api/posts?page=${page}&limit=9`);
       setPosts(response.data.posts);
       setPagination(response.data.pagination);
       setLoading(false);
