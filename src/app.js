@@ -15,12 +15,17 @@ app.get("/health", (req, res) => {
   res.json({ status: "healthy", timestamp: new Date().toISOString() });
 });
 
+// API Route handlers
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 
-// Serve static files from the React app in production
+/**
+ * Production Static Content Handlers
+ * Serves the React build folder and provides a catch-all route for SPA navigation (react-router).
+ */
 const path = require("path");
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));

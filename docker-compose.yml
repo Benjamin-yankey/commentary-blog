@@ -2,6 +2,7 @@ services:
   app:
     build: .
     ports:
+      # Map host 5001 to container 5000 (Prevents macOS port 5000 AirPlay conflict)
       - "5001:5000"
     environment:
       - NODE_ENV=production

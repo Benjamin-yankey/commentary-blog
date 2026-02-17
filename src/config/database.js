@@ -1,6 +1,8 @@
-const { Pool } = require("pg");
-require("dotenv").config();
-
+/**
+ * PostgreSQL Data Source Configuration
+ * Uses 'pg' Pool for efficient connection management.
+ * Environment variables are used for production flexibility.
+ */
 const pool = new Pool({
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
@@ -9,6 +11,11 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || "postgres",
 });
 
+/**
+ * Database Schema Initialization
+ * Automatically creates necessary tables and sample data on startup.
+ * Using SERIAL for PostgreSQL primary keys and ON CONFLICT for idempotency.
+ */
 const initDatabase = async () => {
   try {
     // Create users table

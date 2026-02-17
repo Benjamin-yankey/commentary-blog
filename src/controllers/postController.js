@@ -1,17 +1,27 @@
 const pool = require("../config/database");
 const logger = require("../monitoring/logger");
 
-// Helper function to get random image from LoremFlickr
+/**
+ * Generates a random image URL using LoremFlickr service.
+ * Used for posts that don't have a user-uploaded image.
+ * @param {string} category - Search term for the image
+ */
 const getRandomPostImage = (category = 'blog') => {
   return `https://loremflickr.com/800/600/${category}?random=${Math.random()}`;
 };
 
-// Helper function to generate avatar from DiceBear
+/**
+ * Generates a unique SVG avatar based on the username using DiceBear.
+ * @param {string} username - Seed for the avatar generation
+ */
 const generateAvatar = (username) => {
   return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username)}`;
 };
 
-// Create post with image
+/**
+ * Create a new Blog Post
+ * Validates content length and auto-generates excerpts/images if missing.
+ */
 const createPost = async (req, res) => {
   try {
     const { title, content, category, image_url, image_alt } = req.body;
@@ -56,7 +66,10 @@ const createPost = async (req, res) => {
   }
 };
 
-// Get all posts
+/**
+ * Retrieve all published posts with pagination.
+ * Joins with users table to include author metadata.
+ */
 const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
