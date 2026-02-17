@@ -1,0 +1,13 @@
+node_modules
+client/node_modules
+.git
+coverage
+tests
+docker-compose*
+*.log
+.env
+.env.example
+*.md
+Dockerfile
+.eslintrc.json
+babel.config.js
