@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        PATH = "/opt/homebrew/bin:/usr/local/bin:${PATH}"
         DOCKER_IMAGE = 'commentary-blog'
         DB_HOST = 'localhost'
         DB_PORT = '5432'
