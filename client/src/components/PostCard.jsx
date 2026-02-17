@@ -46,7 +46,7 @@ const PostCard = ({ post }) => {
           <div className="flex items-center">
             {/* Author Avatar */}
             <img
-              src={post.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.username)}&background=random&size=40`}
+              src={post.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(post.username)}`}
               alt={post.username}
               className="w-10 h-10 rounded-full mr-3 border-2 border-blue-200"
             />

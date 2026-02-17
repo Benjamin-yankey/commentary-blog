@@ -56,7 +56,7 @@ const Navbar = () => {
                 
                 <div className="flex items-center space-x-3 border-l pl-4">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&size=40`}
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username)}`}
                     alt={username}
                     className="w-10 h-10 rounded-full border-2 border-blue-200"
                   />
