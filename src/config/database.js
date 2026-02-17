@@ -61,6 +61,17 @@ const initDatabase = async () => {
       )
     `);
 
+    // Create comments table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS comments (
+        id SERIAL PRIMARY KEY,
+        content TEXT NOT NULL,
+        post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+        author_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Create post_categories table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS post_categories (
