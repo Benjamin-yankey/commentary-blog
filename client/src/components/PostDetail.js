@@ -11,7 +11,7 @@ const PostDetail = () => {
   const fetchPost = React.useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5001/api/posts/${id}`);
+      const response = await fetch(`/api/posts/${id}`);
       const data = await response.json();
 
       if (!response.ok) {
