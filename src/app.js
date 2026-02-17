@@ -10,6 +10,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Request logging
+const morgan = require('morgan');
+app.use(morgan('dev')); // Log requests to console
+
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "healthy", timestamp: new Date().toISOString() });
