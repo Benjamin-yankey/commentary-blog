@@ -27,7 +27,7 @@ describe("POST /api/posts", () => {
       .set("Authorization", "Bearer valid-token")
       .send({
         title: "Test Post",
-        content: "Test content",
+        content: "This is a longer test content that exceeds the fifty character minimum requirement for validation purposes.",
       });
 
     expect(response.status).toBe(201);

@@ -43,7 +43,7 @@ pipeline {
                 stage('Test') {
                     steps {
                         echo 'Starting Postgres container...'
-                        sh 'docker-compose -f docker-compose.test.yml up -d'
+                        sh 'docker-compose -f docker-compose.test.yml up -d --remove-orphans'
                         sh 'sleep 5'
                         echo 'Running tests...'
                         sh 'npm run test:ci'
@@ -83,7 +83,7 @@ pipeline {
             junit 'junit.xml'
             archiveArtifacts artifacts: 'coverage/**', allowEmptyArchive: true
             echo 'Stopping containers...'
-            sh 'docker-compose -f docker-compose.test.yml down'
+            sh 'docker-compose -f docker-compose.test.yml down --remove-orphans'
         }
         success {
             echo 'Pipeline completed successfully!'
