@@ -2,6 +2,10 @@ const bcrypt = require("bcryptjs");
 const pool = require("../config/database");
 const generateToken = require("../utils/generateToken");
 
+/**
+ * Handle user registration.
+ * Validates inputs, hashes passwords, and persists to Postgres.
+ */
 const register = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
@@ -56,6 +60,10 @@ const register = async (req, res) => {
   }
 };
 
+/**
+ * Handle user login.
+ * Verifies email and password, returning a JWT if successful.
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;

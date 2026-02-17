@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
 
+/**
+ * JWT Authentication Middleware
+ * Intercepts requests to protected routes and verifies the Bearer token.
+ */
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
