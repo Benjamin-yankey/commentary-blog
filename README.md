@@ -1,201 +1,334 @@
-# Commentary Blog - Agile & DevOps Assessment
+# { DevLog } — Where Code Meets Great Writing
 
-A full-stack blogging platform demonstrating Agile methodology and DevOps best practices.
+<div align="center">
 
-## 🎯 Product Vision
+![DevLog Banner](https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=400&fit=crop)
 
-For writers and readers who want to engage in meaningful discussions, Commentary Blog is a simple blogging platform that enables users to publish posts and engage through comments. Unlike complex platforms like Medium, our product focuses on simplicity and conversation.
+**A premium developer publishing platform built with React, Node.js, PostgreSQL, and Docker.**
 
-## ✨ Features Delivered
+[![License: MIT](https://img.shields.io/badge/License-MIT-00ff9d.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-00ff9d.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18+-58a6ff.svg)](https://reactjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-3776ab.svg)](https://www.postgresql.org/)
 
-### Sprint 1: Authentication System
+[Live Demo](#) · [Report Bug](#) · [Request Feature](#)
 
-- ✅ User registration with validation
-- ✅ Secure login with JWT tokens
-- ✅ Password hashing with bcrypt
-- ✅ Protected routes and middleware
+</div>
 
-### Sprint 2: Blog Functionality
+---
 
-- ✅ Create blog posts with rich text
-- ✅ View all posts on homepage
-- ✅ Individual post pages
-- ✅ Edit/delete for post authors
-- ✅ Pagination
+## 🌟 Features
 
-## 🛠 Tech Stack
+### **For Writers**
+- ✍️ **Rich Editor** with formatting toolbar and markdown support
+- 🖼 **Cover Images** with automatic fallback handling
+- 🏷 **Tag System** with color-coded categories (JavaScript, React, Python, Rust, AI/ML, etc.)
+- 💾 **Auto-Save** with real-time word count and read time estimation
+- 📊 **Post Analytics** (likes, comments, views)
 
-**Frontend:**
+### **For Readers**
+- 🔍 **Smart Search** across posts, tags, and authors
+- 🎨 **Premium Dark UI** with neon green accents and glassmorphism
+- 📱 **Fully Responsive** design for mobile, tablet, and desktop
+- 🔥 **Trending Tags** and leaderboard system
+- 💬 **Comment System** with nested replies
+- 👥 **Author Profiles** with follow functionality
 
-- React 18
-- React Router
-- Axios
-- TailwindCSS
+### **For Developers**
+- 🐳 **Docker Compose** for one-command deployment
+- 🔐 **JWT Authentication** with bcrypt password hashing
+- 🗄 **PostgreSQL** with automatic schema initialization
+- 🚀 **CI/CD Pipeline** with Jenkins integration
+- 📦 **Production-Ready** with multi-stage Docker builds
+- 🌐 **Network Access** via local IP for cross-device testing
 
-**Backend:**
+---
 
-- Node.js
-- Express.js
-- PostgreSQL
-- JWT Authentication
+## 🎨 Design System
 
-**Testing & CI/CD:**
+DevLog uses a **terminal-meets-editorial** aesthetic with:
 
-- Jest (Unit Tests)
-- Supertest (API Tests)
-- React Testing Library
-- GitHub Actions
+- **Typography**: JetBrains Mono (headings/code) + Sora (body)
+- **Colors**: Deep blacks (#080c10) with neon green (#00ff9d) accents
+- **Effects**: Backdrop blur, radial gradients, smooth animations
+- **Components**: Custom scrollbars, focus rings, hover states
 
-## 📊 Project Metrics
-
-| Metric                   | Value        |
-| ------------------------ | ------------ |
-| Story Points Delivered   | 20/20 (100%) |
-| Test Coverage            | 87%          |
-| Total Tests              | 45           |
-| Commits                  | 42           |
-| CI Pipeline Success Rate | 93%          |
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 18+
-- PostgreSQL 14+
-- npm or yarn
+- Docker & Docker Compose
+- Node.js 18+ (for local development)
+- Git
 
 ### Installation
 
-1. Clone the repository
-   \`\`\`bash
-   git clone https://github.com/yourusername/commentary-blog.git
-   cd commentary-blog
-   \`\`\`
+```bash
+# Clone the repository
+git clone https://github.com/Benjamin-yankey/commentary-blog.git
+cd commentary-blog
 
-2. Install dependencies
-   \`\`\`bash
-   npm install
-   cd client && npm install && cd ..
-   \`\`\`
+# Start with Docker Compose (recommended)
+docker-compose up -d --build
 
-3. Set up environment variables
-   \`\`\`bash
-   cp .env.example .env
+# Access the application
+open http://localhost:5001
+```
 
-# Edit .env with your database credentials
+The application will be available at:
+- **Local**: `http://localhost:5001`
+- **Network**: `http://YOUR_LOCAL_IP:5001` (e.g., `http://192.168.6.37:5001`)
 
-\`\`\`
+### Local Development (without Docker)
 
-4. Set up database
-   \`\`\`bash
-   createdb commentary_blog
-   psql commentary_blog < src/config/schema.sql
-   \`\`\`
+```bash
+# Install backend dependencies
+npm install
 
-5. Run the application
-   \`\`\`bash
+# Install frontend dependencies
+cd client && npm install && cd ..
 
-# Terminal 1: Backend
+# Set up environment variables
+cp .env.example .env
 
+# Start PostgreSQL (via Docker or local install)
+# Update .env with your database credentials
+
+# Run backend
 npm run dev
 
-# Terminal 2: Frontend
-
+# Run frontend (in another terminal)
 cd client && npm start
-\`\`\`
+```
 
-6. Run tests
-   \`\`\`bash
-   npm test
-   \`\`\`
+---
 
-## 📁 Documentation
+## 📂 Project Structure
 
-All project documentation is in the `/docs` folder:
+```
+commentary-blog/
+├── client/                 # React frontend
+│   ├── public/
+│   └── src/
+│       ├── components/     # Reusable UI components
+│       │   ├── Navbar.jsx
+│       │   ├── Hero.jsx
+│       │   ├── PostCard.jsx
+│       │   ├── Footer.jsx
+│       │   └── ...
+│       ├── pages/          # Route pages
+│       │   ├── Home.jsx
+│       │   ├── Tags.jsx
+│       │   ├── Leaderboard.jsx
+│       │   ├── PostView.jsx
+│       │   ├── CreatePost.jsx
+│       │   ├── Login.jsx
+│       │   └── Register.jsx
+│       └── index.css       # Design system tokens
+├── src/                    # Node.js backend
+│   ├── config/
+│   │   └── database.js     # PostgreSQL connection & initialization
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── postController.js
+│   │   └── categoryController.js
+│   ├── routes/
+│   ├── middleware/
+│   └── app.js
+├── tests/                  # Jest unit tests
+├── docker-compose.yml      # Multi-container orchestration
+├── Dockerfile              # Multi-stage production build
+├── Jenkinsfile             # CI/CD pipeline
+└── README.md
+```
 
-- [Product Vision](docs/PRODUCT_VISION.md)
-- [Product Backlog](docs/BACKLOG.md)
-- [Sprint 1 Plan](docs/SPRINT_1_PLAN.md)
-- [Sprint 1 Review](docs/SPRINT_1_REVIEW.md)
-- [Sprint 1 Retrospective](docs/SPRINT_1_RETRO.md)
-- [Sprint 2 Plan](docs/SPRINT_2_PLAN.md)
-- [Sprint 2 Review](docs/SPRINT_2_REVIEW.md)
-- [Final Retrospective](docs/FINAL_RETROSPECTIVE.md)
+---
+
+## 🗄 Database Schema
+
+### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(20) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  avatar_url VARCHAR(500),
+  bio TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Posts Table
+```sql
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  image_url VARCHAR(500),
+  image_alt VARCHAR(200),
+  excerpt TEXT,
+  status VARCHAR(20) DEFAULT 'published',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Categories Table
+```sql
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) UNIQUE NOT NULL,
+  icon_url VARCHAR(500),
+  color VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Create new user account
+- `POST /api/auth/login` - Authenticate user
+
+### Posts
+- `GET /api/posts` - Get all posts (paginated)
+- `GET /api/posts/:id` - Get single post
+- `POST /api/posts` - Create new post (requires auth)
+- `PUT /api/posts/:id` - Update post (requires auth)
+- `DELETE /api/posts/:id` - Delete post (requires auth)
+
+### Categories
+- `GET /api/categories` - Get all categories
+
+---
 
 ## 🧪 Testing
 
-### Run all tests
-
-\`\`\`bash
+```bash
+# Run all tests
 npm test
-\`\`\`
 
-### Run with coverage
+# Run tests with coverage
+npm run test:coverage
 
-\`\`\`bash
-npm test -- --coverage
-\`\`\`
+# Run linting
+npm run lint
+```
 
-\`\`\`bash
-npm run test:ci
-\`\`\`
+---
 
-### Running the application with docker-composeß
+## 🚢 Deployment
 
-\`\`\`bash
-docker-compose up -d
-\`\`\`
+### Docker Production Build
 
-### Current Coverage: 87%
+```bash
+# Build and run production containers
+docker-compose up -d --build
 
-- Unit Tests: 37
-- Integration Tests: 8
+# View logs
+docker-compose logs -f app
 
-## 🔄 CI/CD Pipeline
+# Stop containers
+docker-compose down
+```
 
-Automated pipeline runs on every push:
+### CI/CD with Jenkins
 
-- ✅ Linting (ESLint)
-- ✅ Unit Tests
-- ✅ Integration Tests
-- ✅ Coverage Reports
-- ✅ Build Verification
+The project includes a `Jenkinsfile` that:
+1. Installs dependencies
+2. Runs ESLint for code quality
+3. Executes Jest unit tests
+4. Generates JUnit test reports
+5. Archives test results
 
-View pipeline: [GitHub Actions](.github/workflows/ci.yml)
+---
 
-## 📸 Screenshots
+## 🌐 Environment Variables
 
-See [/evidence](evidence/) folder for:
+Create a `.env` file in the root directory:
 
-- Application screenshots
-- Test results
-- Pipeline runs
-- Coverage reports
+```env
+# Server
+PORT=5001
+NODE_ENV=production
 
-## 🎓 Learning Outcomes
+# Database
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=commentary_blog
+DB_USER=postgres
+DB_PASSWORD=postgres
 
-This project demonstrates:
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRES_IN=7d
 
-- ✅ Agile sprint planning and execution
-- ✅ User story creation with acceptance criteria
-- ✅ Test-Driven Development (TDD)
-- ✅ CI/CD pipeline implementation
-- ✅ Incremental, iterative development
-- ✅ Sprint reviews and retrospectives
-- ✅ DevOps best practices
+# Client
+REACT_APP_API_URL=/api
+```
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Search functionality with Elasticsearch
+- [ ] Real-time notifications system
+- [ ] Markdown editor with live preview
+- [ ] User profile pages
+- [ ] Post bookmarking
+- [ ] Social sharing integrations
+- [ ] Email notifications
+- [ ] OAuth integration (GitHub, Google)
+- [ ] Dark/Light theme toggle
+- [ ] RSS feed generation
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 ## 📝 License
 
-MIT License - See LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👤 Author
+---
 
-[Your Name]
+## 👨‍💻 Author
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+**Benjamin Yankey**
+
+- GitHub: [@Benjamin-yankey](https://github.com/Benjamin-yankey)
 - Email: your.email@example.com
 
 ---
 
-**Assessment Submission:** [Date]  
-**Total Duration:** 12 days (Sprint 0 + Sprint 1 + Sprint 2)
+## 🙏 Acknowledgments
+
+- Design inspiration from [Dev.to](https://dev.to) and [Hashnode](https://hashnode.com)
+- Icons from [Iconify](https://iconify.design)
+- Fonts from [Google Fonts](https://fonts.google.com)
+- Images from [Unsplash](https://unsplash.com) and [LoremFlickr](https://loremflickr.com)
+
+---
+
+<div align="center">
+
+**Built with ❤️ for developers**
+
+[⬆ Back to Top](#-devlog--where-code-meets-great-writing)
+
+</div>

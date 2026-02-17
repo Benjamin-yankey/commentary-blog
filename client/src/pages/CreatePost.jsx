@@ -1,302 +1,392 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category: 'blog',
-    image_url: '',
-    image_alt: ''
+  const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [content, setContent] = useState('');
+  const [coverImage, setCoverImage] = useState(null);
+  const [tags, setTags] = useState(['react']);
+  const [tagInput, setTagInput] = useState('');
+  const [visibility, setVisibility] = useState('public');
+  const [allowComments, setAllowComments] = useState(true);
+  const [enableReactions, setEnableReactions] = useState(true);
+  const [pinToProfile, setPinToProfile] = useState(false);
+  const [activeFormats, setActiveFormats] = useState(new Set());
+  const [saving, setSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [error, setError] = useState('');
+  
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const contentRef = useRef(null);
+
+  // Auto-resize textareas
+  const autoResize = (ref) => {
+    if (ref.current) {
+      ref.current.style.height = 'auto';
+      ref.current.style.height = ref.current.scrollHeight + 'px';
+    }
+  };
+
+  useEffect(() => {
+    autoResize(titleRef);
+  }, [title]);
+
+  useEffect(() => {
+    autoResize(subtitleRef);
+  }, [subtitle]);
+
+  useEffect(() => {
+    autoResize(contentRef);
+  }, [content]);
+
+  // Auto-save
+  useEffect(() => {
+    if (title || content) {
+      const timer = setTimeout(() => {
+        setSaving(true);
+        setTimeout(() => {
+          setLastSaved(new Date());
+          setSaving(false);
+        }, 500);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [title, content, subtitle]);
+
+  const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+  const handleCoverClick = () => {
+    setCoverImage('https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=860&q=80');
+  };
+
+  const handleTagKeyDown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase().replace(/\s+/g, '-').replace(/^#/, '');
+      if (!tags.includes(newTag) && tags.length < 5) {
+        setTags([...tags, newTag]);
+      }
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  const toggleFormat = (format) => {
+    setActiveFormats(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(format)) {
+        newSet.delete(format);
+      } else {
+        newSet.add(format);
+      }
+      return newSet;
+    });
+  };
+
+  const loadSampleContent = () => {
+    setContent(`## Introduction
+
+In this article, we'll explore how modern JavaScript async patterns have evolved from callback hell to elegant async/await syntax.
+
+## Why This Matters
+
+As applications grow in complexity, managing asynchronous operations becomes critical. The evolution from callbacks to Promises to async/await has made our code more readable and maintainable.
+
+\`\`\`javascript
+// Old callback style
+getData(function(a) {
+  getMoreData(a, function(b) {
+    getMoreData(b, function(c) {
+      console.log(c);
+    });
   });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [useRandomImage, setUseRandomImage] = useState(true);
-  const [previewImage, setPreviewImage] = useState('');
+});
 
-  const categories = [
-    { value: 'technology', label: 'Technology', emoji: '💻' },
-    { value: 'travel', label: 'Travel', emoji: '✈️' },
-    { value: 'food', label: 'Food', emoji: '🍕' },
-    { value: 'lifestyle', label: 'Lifestyle', emoji: '🏡' },
-    { value: 'opinion', label: 'Opinion', emoji: '💭' },
-    { value: 'blog', label: 'General', emoji: '📝' }
-  ];
+// Modern async/await
+const a = await getData();
+const b = await getMoreData(a);
+const c = await getMoreData(b);
+console.log(c);
+\`\`\`
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error for this field
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+## Conclusion
 
-    // Update preview when category changes
-    if (name === 'category' && useRandomImage) {
-      generatePreview(value);
-    }
+The async/await pattern has revolutionized how we write asynchronous JavaScript code.`);
   };
 
-  const generatePreview = (category) => {
-    const imageUrl = `https://source.unsplash.com/800x600/?${category}`;
-    setPreviewImage(imageUrl);
-  };
-
-  const handleImageToggle = (useRandom) => {
-    setUseRandomImage(useRandom);
-    if (useRandom) {
-      setFormData(prev => ({ ...prev, image_url: '' }));
-      generatePreview(formData.category);
-    } else {
-      setPreviewImage(formData.image_url);
-    }
-  };
-
-  const handleImageUrlChange = (e) => {
-    const url = e.target.value;
-    setFormData(prev => ({ ...prev, image_url: url }));
-    setPreviewImage(url);
-  };
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    } else if (formData.title.length < 5) {
-      newErrors.title = 'Title must be at least 5 characters';
-    } else if (formData.title.length > 200) {
-      newErrors.title = 'Title must be less than 200 characters';
+  const handlePublish = async () => {
+    if (!title.trim() || !content.trim()) {
+      setError('Title and content are required');
+      return;
     }
 
-    if (!formData.content.trim()) {
-      newErrors.content = 'Content is required';
-    } else if (formData.content.length < 50) {
-      newErrors.content = 'Content must be at least 50 characters';
-    }
-
-    if (!useRandomImage && !formData.image_url.trim()) {
-      newErrors.image_url = 'Please provide an image URL or use auto-generate';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validate()) {
+    if (content.length < 50) {
+      setError('Content must be at least 50 characters');
       return;
     }
 
     try {
-      setLoading(true);
-      
+      setSaving(true);
       const token = localStorage.getItem('token');
-      const submitData = { ...formData };
       
-      // If using random image, let backend generate it
-      if (useRandomImage) {
-        submitData.image_url = '';
-      }
-
-      await axios.post('/api/posts', submitData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post('/api/posts', {
+        title: title.trim(),
+        content: content.trim(),
+        category: tags[0] || 'general',
+        image_url: coverImage,
+        image_alt: title
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
 
-      navigate('/');
-    } catch (error) {
-      console.error('Create post error:', error);
-      setErrors({ submit: error.response?.data?.error || 'Failed to create post' });
-    } finally {
-      setLoading(false);
+      if (response.data) {
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Publish error:', err);
+      setError(err.response?.data?.error || 'Failed to publish post');
+      setSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">Create New Post</h1>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Post Title *
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.title ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Enter an engaging title..."
-              />
-              {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-              )}
-              <p className="text-gray-500 text-sm mt-1">
-                {formData.title.length}/200 characters
-              </p>
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Category
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {categories.map(cat => (
-                  <button
-                    key={cat.value}
-                    type="button"
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, category: cat.value }));
-                      if (useRandomImage) generatePreview(cat.value);
-                    }}
-                    className={`p-4 border-2 rounded-lg transition-all ${
-                      formData.category === cat.value
-                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-blue-300'
-                    }`}
-                  >
-                    <span className="text-2xl mb-2 block">{cat.emoji}</span>
-                    <span className="font-semibold">{cat.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Image Selection */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Post Image
-              </label>
-              
-              <div className="flex gap-4 mb-4">
-                <button
-                  type="button"
-                  onClick={() => handleImageToggle(true)}
-                  className={`px-4 py-2 rounded-lg font-semibold ${
-                    useRandomImage
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  ✨ Auto-Generate
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleImageToggle(false)}
-                  className={`px-4 py-2 rounded-lg font-semibold ${
-                    !useRandomImage
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  🔗 Custom URL
-                </button>
-              </div>
-
-              {!useRandomImage && (
-                <div>
-                  <input
-                    type="url"
-                    name="image_url"
-                    value={formData.image_url}
-                    onChange={handleImageUrlChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                      errors.image_url ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  {errors.image_url && (
-                    <p className="text-red-500 text-sm mt-1">{errors.image_url}</p>
-                  )}
-                  <input
-                    type="text"
-                    name="image_alt"
-                    value={formData.image_alt}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg mt-2"
-                    placeholder="Image description (alt text)"
-                  />
-                </div>
-              )}
-
-              {/* Image Preview */}
-              {(previewImage || useRandomImage) && (
-                <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-2">Preview:</p>
-                  <div className="relative h-64 rounded-lg overflow-hidden border-2 border-gray-200">
-                    <img
-                      src={previewImage || `https://source.unsplash.com/800x600/?${formData.category}`}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/800x600/E5E7EB/6B7280?text=Image+Preview';
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Content *
-              </label>
-              <textarea
-                name="content"
-                value={formData.content}
-                onChange={handleChange}
-                rows="12"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.content ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Write your post content here..."
-              />
-              {errors.content && (
-                <p className="text-red-500 text-sm mt-1">{errors.content}</p>
-              )}
-              <p className="text-gray-500 text-sm mt-1">
-                {formData.content.length} characters (minimum 50)
-              </p>
-            </div>
-
-            {/* Submit Error */}
-            {errors.submit && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {errors.submit}
-              </div>
+    <div className="min-h-screen bg-[var(--bg)] pb-20">
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="text-[13px] mono text-[var(--text3)]">
+            {saving ? (
+              <span className="text-[var(--yellow)]">💾 Saving...</span>
+            ) : lastSaved ? (
+              <span className="text-[var(--accent)]">✓ Draft saved</span>
+            ) : (
+              <span>Draft · {new Date().toLocaleDateString()}</span>
             )}
+            {wordCount > 0 && (
+              <span className="ml-3">· {wordCount} words · {readTime} min read</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/')} className="btn btn-ghost px-4 py-2 text-[13px]">
+              ← Back
+            </button>
+            <button onClick={handlePublish} disabled={saving} className="btn btn-primary px-6 py-2 text-[13px]">
+              🚀 Publish Now
+            </button>
+          </div>
+        </div>
 
-            {/* Submit Buttons */}
-            <div className="flex gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-              >
-                {loading ? 'Publishing...' : '✨ Publish Post'}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/')}
-                className="px-8 py-3 border-2 border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition"
-              >
-                Cancel
-              </button>
+        {error && (
+          <div className="mb-6 p-4 bg-[rgba(248,81,73,0.1)] border border-[var(--red)] rounded-lg text-[var(--red)] text-[14px]">
+            {error}
+          </div>
+        )}
+
+        {/* Cover Image */}
+        <div 
+          onClick={handleCoverClick}
+          className={`w-full h-[200px] rounded-xl mb-6 cursor-pointer transition ${
+            coverImage 
+              ? 'border-2 border-[var(--border)]' 
+              : 'border-2 border-dashed border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow2)]'
+          }`}
+        >
+          {coverImage ? (
+            <img src={coverImage} alt="Cover" className="w-full h-full object-cover rounded-xl" />
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-[var(--text3)] hover:text-[var(--accent)] transition">
+              <span className="text-[32px] mb-2">🖼</span>
+              <span className="text-[14px]">Click to add a cover image</span>
+              <span className="text-[12px] mt-1">1920×1080 recommended · JPG, PNG, WebP</span>
             </div>
-          </form>
+          )}
+        </div>
+
+        {/* Title */}
+        <textarea
+          ref={titleRef}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Your post title..."
+          className="w-full bg-transparent border-0 border-b border-[var(--border)] outline-none resize-none overflow-hidden text-[clamp(24px,4vw,40px)] mono font-[800] text-[var(--text)] leading-[1.2] tracking-[-1px] mb-1 pb-4"
+          rows={1}
+        />
+
+        {/* Subtitle */}
+        <textarea
+          ref={subtitleRef}
+          value={subtitle}
+          onChange={(e) => setSubtitle(e.target.value)}
+          placeholder="Add a subtitle or hook (optional)..."
+          className="w-full bg-transparent border-0 border-b border-[var(--border)] outline-none resize-none overflow-hidden text-[18px] text-[var(--text2)] mb-6 pb-4"
+          rows={1}
+        />
+
+        {/* Formatting Toolbar */}
+        <div className="flex flex-wrap gap-1 p-3 bg-[var(--bg2)] border border-[var(--border)] rounded-lg mb-6">
+          {/* Headings */}
+          {['H1', 'H2', 'H3'].map(h => (
+            <button
+              key={h}
+              onClick={() => toggleFormat(h)}
+              className={`px-3 py-1.5 rounded text-[13px] mono font-bold transition ${
+                activeFormats.has(h) 
+                  ? 'bg-[var(--accent-glow)] text-[var(--accent)]' 
+                  : 'text-[var(--text2)] hover:bg-[var(--bg3)] hover:text-[var(--text)]'
+              }`}
+            >
+              {h}
+            </button>
+          ))}
+          
+          <div className="w-px h-5 bg-[var(--border)] self-center mx-1"></div>
+          
+          {/* Text Style */}
+          {[{k:'B',l:'B'}, {k:'I',l:'I'}, {k:'U',l:'U'}, {k:'S',l:'S̶'}].map(({k,l}) => (
+            <button
+              key={k}
+              onClick={() => toggleFormat(k)}
+              className={`px-3 py-1.5 rounded text-[13px] mono font-bold transition ${
+                activeFormats.has(k) 
+                  ? 'bg-[var(--accent-glow)] text-[var(--accent)]' 
+                  : 'text-[var(--text2)] hover:bg-[var(--bg3)] hover:text-[var(--text)]'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+
+          <div className="w-px h-5 bg-[var(--border)] self-center mx-1"></div>
+
+          {/* Code/Quote */}
+          {[{k:'code',l:'</>'}, {k:'quote',l:'""'}].map(({k,l}) => (
+            <button
+              key={k}
+              onClick={() => toggleFormat(k)}
+              className={`px-3 py-1.5 rounded text-[13px] mono font-bold transition ${
+                activeFormats.has(k) 
+                  ? 'bg-[var(--accent-glow)] text-[var(--accent)]' 
+                  : 'text-[var(--text2)] hover:bg-[var(--bg3)] hover:text-[var(--text)]'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+
+          <div className="w-px h-5 bg-[var(--border)] self-center mx-1"></div>
+
+          {/* Insert */}
+          {[{k:'link',l:'🔗 Link'}, {k:'img',l:'🖼 Image'}, {k:'embed',l:'📹 Embed'}].map(({k,l}) => (
+            <button
+              key={k}
+              onClick={() => toggleFormat(k)}
+              className={`px-3 py-1.5 rounded text-[13px] mono font-bold transition ${
+                activeFormats.has(k) 
+                  ? 'bg-[var(--accent-glow)] text-[var(--accent)]' 
+                  : 'text-[var(--text2)] hover:bg-[var(--bg3)] hover:text-[var(--text)]'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <textarea
+          ref={contentRef}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder={`Start writing your post...
+
+Tips:
+• Use ## for headings
+• Wrap code in \`backticks\`
+• Add images with the toolbar above`}
+          className="w-full min-h-[400px] bg-transparent border-0 outline-none resize-none text-[16px] text-[var(--text)] leading-[1.8]"
+        />
+
+        {content.length === 0 && (
+          <button onClick={loadSampleContent} className="btn btn-ghost btn-sm text-[12px] text-[var(--text3)] mt-4">
+            ✨ Load sample content to preview the editor
+          </button>
+        )}
+
+        {/* Settings */}
+        <div className="mt-12 pt-8 border-t border-[var(--border)] space-y-6">
+          {/* Tags */}
+          <div>
+            <label className="block text-[13px] font-bold text-[var(--text2)] mb-2">
+              Tags <span className="font-normal text-[var(--text3)]">(up to 5, press Enter or comma to add)</span>
+            </label>
+            <div className="flex flex-wrap gap-2 p-3 bg-[var(--bg2)] border border-[var(--border)] rounded-lg min-h-[46px] focus-within:border-[var(--accent)]">
+              {tags.map(tag => (
+                <span key={tag} className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--accent-glow)] border border-[rgba(0,255,157,0.3)] text-[var(--accent)] rounded text-[12px] mono">
+                  {tag}
+                  <button onClick={() => removeTag(tag)} className="hover:opacity-70">×</button>
+                </span>
+              ))}
+              {tags.length < 5 && (
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  placeholder="Add tag..."
+                  className="flex-1 min-w-[120px] bg-transparent border-0 outline-none text-[14px] text-[var(--text)]"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Settings Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[13px] font-bold text-[var(--text2)] mb-2">Visibility</label>
+              <select 
+                value={visibility}
+                onChange={(e) => setVisibility(e.target.value)}
+                className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-4 py-2 text-[14px] text-[var(--text)] outline-none focus:border-[var(--accent)]"
+              >
+                <option value="public">🌍 Public</option>
+                <option value="unlisted">🔗 Unlisted</option>
+                <option value="draft">🔒 Draft only</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[13px] font-bold text-[var(--text2)] mb-2">Schedule</label>
+              <input 
+                type="datetime-local"
+                className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-4 py-2 text-[14px] text-[var(--text)] outline-none focus:border-[var(--accent)]"
+              />
+            </div>
+          </div>
+
+          {/* Checkboxes */}
+          <div className="flex flex-wrap gap-6">
+            <label className="flex items-center gap-2 text-[13px] text-[var(--text2)] cursor-pointer">
+              <input type="checkbox" checked={allowComments} onChange={(e) => setAllowComments(e.target.checked)} className="accent-[var(--accent)]" />
+              Allow comments
+            </label>
+            <label className="flex items-center gap-2 text-[13px] text-[var(--text2)] cursor-pointer">
+              <input type="checkbox" checked={enableReactions} onChange={(e) => setEnableReactions(e.target.checked)} className="accent-[var(--accent)]" />
+              Enable reactions
+            </label>
+            <label className="flex items-center gap-2 text-[13px] text-[var(--text2)] cursor-pointer">
+              <input type="checkbox" checked={pinToProfile} onChange={(e) => setPinToProfile(e.target.checked)} className="accent-[var(--accent)]" />
+              Pin to profile
+            </label>
+          </div>
         </div>
       </div>
     </div>
