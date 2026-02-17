@@ -26,6 +26,7 @@ function App() {
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/posts/:id" element={<PostView />} />
             <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/edit-post/:id" element={<CreatePost />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
