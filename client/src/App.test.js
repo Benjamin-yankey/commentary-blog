@@ -2,8 +2,11 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders blog title', () => {
+test('renders DevLog platform', () => {
   render(<App />);
-  const titleElements = screen.getAllByText(/Commentary Blog/i);
-  expect(titleElements.length).toBeGreaterThan(0);
+  // Check for parts of the main heading that aren't split across elements
+  const codeText = screen.getByText(/Code/i);
+  const writingText = screen.getByText(/Great Writing/i);
+  expect(codeText).toBeInTheDocument();
+  expect(writingText).toBeInTheDocument();
 });
