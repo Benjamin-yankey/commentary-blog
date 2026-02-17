@@ -63,7 +63,9 @@ const PostView = () => {
     return (
       <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
         <div className="text-center">
-          <div className="text-[48px] mb-4">😕</div>
+          <div className="text-[48px] mb-4 text-[var(--accent)]">
+            !
+          </div>
           <h2 className="text-[24px] mono font-bold text-[var(--text)] mb-4">Post Not Found</h2>
           <button onClick={() => navigate('/')} className="btn btn-primary">
             ← Back to Home
@@ -140,7 +142,7 @@ const PostView = () => {
               <span className="mono text-[13px] font-bold">{likeCount}</span>
             </button>
             <button className="btn btn-outline px-4 py-2 text-[13px]">
-              💬 Comment
+              Comment
             </button>
           </div>
         </div>
@@ -166,14 +168,14 @@ const PostView = () => {
               <span className="mono">{likeCount}</span>
             </button>
             <button className="btn btn-ghost px-6 py-3">
-              💬 47 Comments
+              47 Comments
             </button>
             <button className="btn btn-ghost px-6 py-3">
-              🔖 Save
+              Save
             </button>
           </div>
           <button className="btn btn-ghost px-6 py-3">
-            📤 Share
+            Share
           </button>
         </div>
 
@@ -190,7 +192,7 @@ const PostView = () => {
               <p className="text-[14px] text-[var(--text2)] mb-4">
                 Developer, writer, and tech enthusiast. Passionate about sharing knowledge and building great software.
               </p>
-              <button className="btn btn-outline px-6 py-2 text-[13px]">+ Follow</button>
+              <button className="btn btn-outline px-6 py-2 text-[13px]">Follow</button>
             </div>
           </div>
         </div>
@@ -198,7 +200,7 @@ const PostView = () => {
         {/* Comments Section */}
         <div className="mt-12">
           <h3 className="text-[24px] mono font-bold text-[var(--text)] mb-6">
-            💬 Comments <span className="text-[var(--text3)]">(47)</span>
+            Comments <span className="text-[var(--text3)]">(47)</span>
           </h3>
           
           {/* Comment Input */}

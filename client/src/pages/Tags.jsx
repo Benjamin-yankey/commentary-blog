@@ -70,7 +70,11 @@ const Tags = () => {
               placeholder="Search tags..."
               className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-12 py-3 text-[14px] text-[var(--text)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-glow2)] outline-none transition"
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text3)]">🔍</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text3)]">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
           </div>
 
           <div className="mt-4 text-[13px] text-[var(--text3)]">
@@ -103,7 +107,11 @@ const Tags = () => {
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <span className="text-[32px]">{tag.icon_url ? '🏷️' : '⚡'}</span>
+                  <span className="text-[var(--text3)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                  </span>
                   <span className="bg-[var(--bg3)] px-2 py-1 rounded text-[11px] mono text-[var(--text3)]">
                     {Math.floor(Math.random() * 5000) + 500} posts
                   </span>
@@ -129,9 +137,9 @@ const Tags = () => {
                         : 'bg-[var(--bg3)] text-[var(--text2)] border border-[var(--border)] hover:border-[var(--accent)]'
                     }`}
                   >
-                    {isFollowing ? '✓ Following' : '+ Follow'}
+                    {isFollowing ? 'Following' : 'Follow'}
                   </button>
-                  <span className="text-[11px] text-[var(--text3)]">🔥 Trending</span>
+                  <span className="text-[11px] text-[var(--text3)]">Trending</span>
                 </div>
               </div>
             );

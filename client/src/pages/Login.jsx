@@ -138,9 +138,9 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition text-[12px] uppercase font-bold tracking-wider"
               >
-                {showPassword ? '👁' : '🙈'}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
           </div>
@@ -165,7 +165,7 @@ const Login = () => {
             disabled={loading}
             className="w-full btn btn-primary py-3 text-[15px] disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Sign In →'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 

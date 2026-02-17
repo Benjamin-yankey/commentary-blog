@@ -11,7 +11,7 @@ const Hero = ({ stats = {} }) => {
       <div className="relative z-10 flex flex-col items-center px-4">
         {/* Animated Badge */}
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[var(--accent-glow)] border border-[rgba(0,255,157,0.3)] text-[var(--accent)] mono text-[12px] mb-8 animate-up">
-          <span className="animate-pulse">⚡</span>
+          <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></span>
           <span>The Developer's Publishing Platform</span>
         </div>
 
@@ -29,13 +29,13 @@ const Hero = ({ stats = {} }) => {
         {/* CTAs */}
         <div className="flex flex-wrap justify-center gap-4 mb-16 animate-up [animation-delay:300ms]">
           <Link to="/create-post" className="btn btn-primary px-10 py-4 text-[16px]">
-            ✍️ Start Writing
+            Start Writing
           </Link>
           <button 
             onClick={() => document.getElementById('posts-section')?.scrollIntoView({ behavior: 'smooth' })}
             className="btn btn-outline px-10 py-4 text-[16px]"
           >
-            🔭 Explore Posts
+            Explore Posts
           </button>
         </div>
 

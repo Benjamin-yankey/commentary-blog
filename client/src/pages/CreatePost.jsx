@@ -167,9 +167,9 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
         <div className="flex items-center justify-between mb-8">
           <div className="text-[13px] mono text-[var(--text3)]">
             {saving ? (
-              <span className="text-[var(--yellow)]">💾 Saving...</span>
+              <span className="text-[var(--yellow)]">Saving...</span>
             ) : lastSaved ? (
-              <span className="text-[var(--accent)]">✓ Draft saved</span>
+              <span className="text-[var(--accent)]">Draft saved</span>
             ) : (
               <span>Draft · {new Date().toLocaleDateString()}</span>
             )}
@@ -178,11 +178,11 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
             )}
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/')} className="btn btn-ghost px-4 py-2 text-[13px]">
-              ← Back
+           <button onClick={() => navigate('/')} className="btn btn-ghost px-4 py-2 text-[13px]">
+              Back
             </button>
             <button onClick={handlePublish} disabled={saving} className="btn btn-primary px-6 py-2 text-[13px]">
-              🚀 Publish Now
+              Publish Now
             </button>
           </div>
         </div>
@@ -206,7 +206,11 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
             <img src={coverImage} alt="Cover" className="w-full h-full object-cover rounded-xl" />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-[var(--text3)] hover:text-[var(--accent)] transition">
-              <span className="text-[32px] mb-2">🖼</span>
+              <span className="mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </span>
               <span className="text-[14px]">Click to add a cover image</span>
               <span className="text-[12px] mt-1">1920×1080 recommended · JPG, PNG, WebP</span>
             </div>
@@ -287,7 +291,7 @@ The async/await pattern has revolutionized how we write asynchronous JavaScript 
           <div className="w-px h-5 bg-[var(--border)] self-center mx-1"></div>
 
           {/* Insert */}
-          {[{k:'link',l:'🔗 Link'}, {k:'img',l:'🖼 Image'}, {k:'embed',l:'📹 Embed'}].map(({k,l}) => (
+          {[{k:'link',l:'Link'}, {k:'img',l:'Image'}, {k:'embed',l:'Embed'}].map(({k,l}) => (
             <button
               key={k}
               onClick={() => toggleFormat(k)}
@@ -318,7 +322,7 @@ Tips:
 
         {content.length === 0 && (
           <button onClick={loadSampleContent} className="btn btn-ghost btn-sm text-[12px] text-[var(--text3)] mt-4">
-            ✨ Load sample content to preview the editor
+            Load sample content to preview the editor
           </button>
         )}
 
@@ -358,9 +362,9 @@ Tips:
                 onChange={(e) => setVisibility(e.target.value)}
                 className="w-full bg-[var(--bg3)] border border-[var(--border)] rounded-lg px-4 py-2 text-[14px] text-[var(--text)] outline-none focus:border-[var(--accent)]"
               >
-                <option value="public">🌍 Public</option>
-                <option value="unlisted">🔗 Unlisted</option>
-                <option value="draft">🔒 Draft only</option>
+                <option value="public">Public</option>
+                <option value="unlisted">Unlisted</option>
+                <option value="draft">Draft only</option>
               </select>
             </div>
             <div>

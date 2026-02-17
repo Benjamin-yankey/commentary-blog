@@ -26,7 +26,7 @@ const Register = () => {
     if (!password) return null;
     if (password.length < 6) return { level: 'weak', color: 'var(--red)', width: '33%', text: 'Weak — add numbers and symbols' };
     if (password.length < 10) return { level: 'medium', color: 'var(--yellow)', width: '66%', text: 'Medium — almost there' };
-    return { level: 'strong', color: 'var(--accent)', width: '100%', text: 'Strong password ✓' };
+    return { level: 'strong', color: 'var(--accent)', width: '100%', text: 'Strong password' };
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
@@ -198,9 +198,9 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition text-[12px] uppercase font-bold tracking-wider"
               >
-                {showPassword ? '👁' : '🙈'}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {passwordStrength && (
@@ -239,9 +239,9 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text3)] hover:text-[var(--text)] transition text-[12px] uppercase font-bold tracking-wider"
               >
-                {showConfirmPassword ? '👁' : '🙈'}
+                {showConfirmPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {formData.confirmPassword && !passwordsMatch && (
@@ -270,7 +270,7 @@ const Register = () => {
             disabled={loading || !agreedToTerms}
             className="w-full btn btn-primary py-3 text-[15px] disabled:opacity-50"
           >
-            {loading ? 'Creating account...' : 'Create Account 🚀'}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 

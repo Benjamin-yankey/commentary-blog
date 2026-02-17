@@ -55,7 +55,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center text-[13px] text-[var(--text3)]">
-          <p className="mono">© 2026 DevLog · Built with ❤️ for developers</p>
+          <p className="mono">© 2026 DevLog · Built for developers</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="/privacy" className="hover:text-[var(--text)] transition">Privacy</a>
             <a href="/terms" className="hover:text-[var(--text)] transition">Terms</a>

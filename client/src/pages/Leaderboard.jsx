@@ -4,9 +4,9 @@ const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('all');
 
   const leaderboardData = [
-    { rank: 1, name: 'Aleksei Volkov', handle: '@0xvolkov', posts: 142, likes: 18420, views: '892K', streak: 87, badge: '🏆 Top Author', avatar: 'A' },
-    { rank: 2, name: 'Priya Nair', handle: '@priya_codes', posts: 98, likes: 14231, views: '671K', streak: 61, badge: '⭐ Rising Star', avatar: 'P' },
-    { rank: 3, name: 'Marcus Chen', handle: '@mchen_dev', posts: 115, likes: 12980, views: '601K', streak: 45, badge: '💎 Veteran', avatar: 'M' },
+    { rank: 1, name: 'Aleksei Volkov', handle: '@0xvolkov', posts: 142, likes: 18420, views: '892K', streak: 87, badge: 'Top Author', avatar: 'A' },
+    { rank: 2, name: 'Priya Nair', handle: '@priya_codes', posts: 98, likes: 14231, views: '671K', streak: 61, badge: 'Rising Star', avatar: 'P' },
+    { rank: 3, name: 'Marcus Chen', handle: '@mchen_dev', posts: 115, likes: 12980, views: '601K', streak: 45, badge: 'Veteran', avatar: 'M' },
     { rank: 4, name: 'Fatima Al-Rashid', handle: '@fatima_builds', posts: 87, likes: 9821, views: '421K', streak: 33, avatar: 'F' },
     { rank: 5, name: 'bytecoder', handle: '@bytecoder', posts: 74, likes: 8654, views: '389K', streak: 28, avatar: 'B' },
     { rank: 6, name: 'rustacean_dev', handle: '@rustacean_dev', posts: 63, likes: 7891, views: '341K', streak: 22, avatar: 'R' },
@@ -25,7 +25,7 @@ const Leaderboard = () => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-radial-gradient from-[var(--accent-glow)] to-transparent opacity-30 z-0"></div>
         <div className="relative z-10">
           <h1 className="text-[40px] mono font-[800] mb-4">
-            🏆 <span className="text-[var(--accent)]">Leaderboard</span>
+            <span className="text-[var(--accent)]">Leaderboard</span>
           </h1>
           <p className="text-[18px] text-[var(--text2)]">
             Top authors by posts, likes, and community impact.
@@ -62,7 +62,7 @@ const Leaderboard = () => {
             
             return (
               <div key={user.rank} className="flex flex-col items-center gap-3 animate-up" style={{ animationDelay: `${idx * 100}ms` }}>
-                {idx === 1 && <span className="text-[24px]">👑</span>}
+                {idx === 1 && <span className="text-[24px]"></span>}
                 <div 
                   className="rounded-full border-4 flex items-center justify-center font-bold mono text-[var(--bg)]"
                   style={{ 
@@ -124,7 +124,7 @@ const Leaderboard = () => {
                 </div>
                 <div className="flex items-center gap-2 text-[12px] text-[var(--text3)] mono">
                   <span>{user.handle}</span>
-                  <span className="text-[var(--red)]">🔥 {user.streak}d</span>
+                  <span className="text-[var(--red)]">{user.streak}d streak</span>
                 </div>
               </div>
 

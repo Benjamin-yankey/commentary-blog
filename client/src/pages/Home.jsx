@@ -95,7 +95,11 @@ const Home = () => {
 
             {posts.length === 0 ? (
               <div className="card p-12 text-center">
-                <div className="text-[48px] mb-4">📝</div>
+                <div className="text-[48px] mb-4 text-[var(--text2)]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
                 <p className="text-[var(--text2)] text-[16px] mb-4">No posts yet. Be the first to write!</p>
                 <a href="/create-post" className="btn btn-primary">Start Writing</a>
               </div>
@@ -117,7 +121,7 @@ const Home = () => {
                       disabled={currentPage === 1}
                       className="btn btn-ghost px-4 py-2 disabled:opacity-30"
                     >
-                      ← Previous
+                      Previous
                     </button>
                     
                     <div className="flex gap-2">
@@ -141,7 +145,7 @@ const Home = () => {
                       disabled={currentPage === pagination.totalPages}
                       className="btn btn-ghost px-4 py-2 disabled:opacity-30"
                     >
-                      Next →
+                      Next
                     </button>
                   </div>
                 )}
@@ -154,13 +158,13 @@ const Home = () => {
             {/* Trending Tags */}
             <div className="card p-6">
               <h3 className="text-[13px] mono font-bold text-[var(--text2)] uppercase tracking-widest mb-4">
-                🔥 Trending Tags
+                Trending Tags
               </h3>
               <div className="space-y-3">
                 {['JavaScript', 'React', 'Python', 'Rust', 'AI/ML', 'DevOps'].map((tag, idx) => (
                   <div key={tag} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0 hover:translate-x-1 transition cursor-pointer">
                     <span className="text-[14px] text-[var(--text)] hover:text-[var(--accent)] transition">
-                      ⚡ #{tag}
+                      #{tag}
                     </span>
                     <span className="text-[12px] mono text-[var(--text3)]">
                       {(Math.random() * 5 + 1).toFixed(1)}k posts
@@ -173,7 +177,7 @@ const Home = () => {
             {/* Who to Follow */}
             <div className="card p-6">
               <h3 className="text-[13px] mono font-bold text-[var(--text2)] uppercase tracking-widest mb-4">
-                👥 Who to Follow
+                Who to Follow
               </h3>
               <div className="space-y-4">
                 {['0xKira', 'rustacean_dev', 'css_witch', 'mlwhisperer'].map(user => (
@@ -193,11 +197,11 @@ const Home = () => {
 
             {/* CTA Card */}
             <div className="card p-6 bg-gradient-to-br from-[rgba(0,255,157,0.05)] to-[rgba(88,166,255,0.05)] border-[rgba(0,255,157,0.2)]">
-              <h3 className="text-[16px] font-bold text-[var(--accent)] mb-2">✨ Write Your First Post</h3>
+              <h3 className="text-[16px] font-bold text-[var(--accent)] mb-2">Write Your First Post</h3>
               <p className="text-[13px] text-[var(--text2)] mb-4">
                 Share your knowledge with thousands of developers worldwide.
               </p>
-              <a href="/create-post" className="btn btn-primary w-full">Start Writing ✍️</a>
+              <a href="/create-post" className="btn btn-primary w-full">Start Writing</a>
             </div>
           </div>
         </div>

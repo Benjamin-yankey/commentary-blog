@@ -68,12 +68,10 @@ const PostCard = ({ post }) => {
         <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
           <div className="flex items-center space-x-4">
             <button className="flex items-center space-x-1 text-[var(--text3)] hover:text-[var(--red)] transition">
-              <span>♡</span>
-              <span className="text-[11px] mono">312</span>
+              <span className="text-[11px] mono">312 likes</span>
             </button>
             <div className="flex items-center space-x-1 text-[var(--text3)]">
-              <span>💬</span>
-              <span className="text-[11px] mono">47</span>
+              <span className="text-[11px] mono">47 comments</span>
             </div>
           </div>
           <span className="text-[11px] mono text-[var(--text3)]">8 min read</span>
