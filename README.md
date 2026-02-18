@@ -187,6 +187,17 @@ CREATE TABLE categories (
 );
 ```
 
+### Comments Table
+```sql
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  content TEXT NOT NULL,
+  post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ---
 
 ## 🔌 API Endpoints
@@ -204,6 +215,11 @@ CREATE TABLE categories (
 
 ### Categories
 - `GET /api/categories` - Get all categories
+
+### Comments
+- `GET /api/comments/post/:postId` - Get comments for a post
+- `POST /api/comments/post/:postId` - Add a comment (requires auth)
+- `DELETE /api/comments/:commentId` - Delete a comment (requires auth)
 
 ---
 
