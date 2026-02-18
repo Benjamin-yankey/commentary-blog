@@ -67,7 +67,8 @@ Successfully delivered a working commentary blog application with:
 
 ### Sprint 0 (Planning)
 
-**Duration:** 2 days  
+**Duration:** 2 days (Day 1-2)
+**Goal:** Prepare project foundation
 **Output:**
 
 - Product vision document
