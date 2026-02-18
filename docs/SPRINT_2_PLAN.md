@@ -1,4 +1,118 @@
-# Sprint 2 Plan
+# Sprint 2 Plan: Core Features & Feedback Implementation
+
+**Sprint Duration:** Day 8-12 (5 days)  
+**Sprint Goal:** Transform the MVP into a functional blogging platform by enabling post creation, viewing, and community interaction, while applying process improvements from Sprint 1.
+
+---
+
+## 🎯 Selected User Stories
+
+### 1. Create Blog Post (Backlog Item #3)
+**Estimate:** 5 Story Points  
+**Description:** Build complete functionality for authenticated users to write and publish posts.  
+**Dependencies:** User Authentication (Completed in Sprint 1)  
+**Acceptance Criteria:**
+- [ ] User can access "New Post" page
+- [ ] Form captures Title, Content, and optional Image URL
+- [ ] Validation prevents empty titles or short content (<50 chars)
+- [ ] Successful submission redirects to the new post
+- [ ] Error messages display for invalid inputs
+
+### 2. View All Blog Posts (Backlog Item #4)
+**Estimate:** 3 Story Points  
+**Description:** Display a responsive homepage listing all published posts to drive discovery.  
+**Acceptance Criteria:**
+- [ ] Homepage fetches latest posts from API
+- [ ] Display card includes Title, Author, Date, and Excerpt
+- [ ] "Read More" button links to full post
+- [ ] Loading state (spinner) shown while fetching
+- [ ] Empty state shown if no posts exist
+
+### 3. View Individual Post (Backlog Item #5)
+**Estimate:** 3 Story Points  
+**Description:** Show full post content on a dedicated page to verify data integrity and display.  
+**Acceptance Criteria:**
+- [ ] URL `/posts/:id` loads specific post data
+- [ ] Title, Author, Date, and Full Content are visible
+- [ ] 404 Page displayed if ID does not exist
+- [ ] Markdown/Text formatting is preserved
+
+### 4. Add Comments (Backlog Item #6)
+**Estimate:** 5 Story Points  
+**Description:** Enable community engagement through a comment section.  
+**Acceptance Criteria:**
+- [ ] Comment input visible only to logged-in users
+- [ ] Comment list visible to all users
+- [ ] New comments appear immediately (optimistic UI or re-fetch)
+- [ ] Authors can delete their own comments
+
+---
+
+## 🔄 Process Improvements (From Sprint 1 Retro)
+
+| Improvement | Action Items | Success Metric |
+| :--- | :--- | :--- |
+| **Start Frontend Early** | Setup React on Day 1. Don't wait for backend completion. | Feature demo-able by Day 4 |
+| **Integration Testing** | Add supertest for API endpoints. | > 85% Coverage |
+| **Better Logging** | Install `morgan` middleware. | Logs visible in CI/CD output |
+| **Small Commits** | Commit every ~2 hours of work. | > 15 commits total |
+
+---
+
+## 📅 Day-by-Day Execution Plan
+
+### Day 1: Foundation & Frontend Setup
+- [ ] **Tech:** Initialize React Client (CRA/Vite).
+- [ ] **Tech:** configure `concurrently` to run client/server together.
+- [ ] **Tech:** Install `morgan` for backend logging.
+- [ ] **UI:** Build `Navbar` and `Layout` components.
+- [ ] **DB:** Create `posts` and `comments` tables migration.
+- [ ] **Docs:** Update API documentation.
+
+### Day 2: Post Creation (Full Stack)
+- [ ] **Backend:** Implement `POST /api/posts` with validation.
+- [ ] **Backend:** Test endpoint with Jest/Supertest.
+- [ ] **Frontend:** Build `CreatePost` form with state management.
+- [ ] **Integration:** Connect Form to API and handle errors.
+
+### Day 3: Reading Experience
+- [ ] **Backend:** Implement `GET /api/posts` and `GET /api/posts/:id`.
+- [ ] **Frontend:** Create `PostList` component (Homepage).
+- [ ] **Frontend:** Create `PostDetail` page.
+- [ ] **Style:** Apply CSS/Tailwind for responsive design.
+
+### Day 4: Comments & Refinement
+- [ ] **Backend:** Implement Comments API (CRUD).
+- [ ] **Frontend:** Build `CommentSection` component.
+- [ ] **Security:** Ensure only authors can delete their content.
+- [ ] **Verify:** Run full test suite.
+
+### Day 5: Final Polish & Review
+- [ ] **QA:** Manual walkthrough of all user stories.
+- [ ] **DevOps:** Verify Jenkins/GitHub Actions pipeline passes.
+- [ ] **Docs:** Screenshot evidence for submission.
+- [ ] **Retro:** Conduct Sprint 2 Retrospective.
+
+---
+
+## 📋 Definition of Done (DoD)
+
+A User Story is Done when:
+1.  **Code:** Compiles, runs, and is committed to `main`.
+2.  **Tests:** Unit tests passed + Integration tests passed.
+3.  **review:** Self-reviewed against Acceptance Criteria.
+4.  **CI/CD:** Pipeline green (Build + Test + Lint).
+5.  **Audit:** No severity 1 security vulnerabilities.
+
+---
+
+## 🛠 Resource Plan
+
+- **Developer:** 1 (Full Stack)
+- **Tools:** VS Code, Docker, Postman
+- **Risk Management:**
+    - *Risk:* Frontend complexity. *Mitigation:* specific UI library (Tailwind) to speed up styling.
+    - *Risk:* Database schema changes. *Mitigation:* Use simple SQL scripts instead of complex ORM migrations for MVP.
 
 **Sprint Duration:** Day 8-12 (5 days)  
 **Sprint Goal:** Enable users to create, view, and read blog posts
